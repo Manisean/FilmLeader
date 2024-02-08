@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'pages.dart'; // Import the pages file
 
 void main() {
   runApp(const MyApp());
@@ -136,18 +137,20 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
-                    _counter = 0;
-                    print(_counter);
-                    print('Beginner button pressed');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BeginnerPage()),
+                    );
                   },
                   child: Text('Beginner'),
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    _counter = 1;
-                    print(_counter);
-                    print('Expert button pressed');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CameraPage()),
+                    );
                   },
                   child: Text('Expert'),
                 ),
