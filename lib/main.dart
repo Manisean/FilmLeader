@@ -28,10 +28,10 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Welcome to Light Meter!'),
     );
   }
 }
@@ -83,7 +83,10 @@ class _MyHomePageState extends State<MyHomePage> {
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
@@ -107,12 +110,48 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
+              child: Text(
+                'Welcome to the Light Meter App. \n',
+                textAlign: TextAlign.center, // Center align the text
+                style: TextStyle(
+                  fontSize: 24, // Adjust the font size to make it look like a header
+                  fontWeight: FontWeight.bold, // Apply bold font weight
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
+              child: Text(
+                'Here you will select whether you are a beginner photographer and may need help figuring out what light settings you want, or you may be an expert looking for a little helping hand. \n'
+                    'If you are a beginner, you will be provided with questions to help figure out the best settings for you. If you are an expert, you will be taken directly to the camera portion of this app.\n'
+                    'This can be changed at any time in the settings menu.\n',
+                textAlign: TextAlign.center, // Center align the text
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    _counter = 0;
+                    print(_counter);
+                    print('Beginner button pressed');
+                  },
+                  child: Text('Beginner'),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    _counter = 1;
+                    print(_counter);
+                    print('Expert button pressed');
+                  },
+                  child: Text('Expert'),
+                ),
+              ],
             ),
           ],
         ),
@@ -121,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
