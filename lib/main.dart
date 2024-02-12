@@ -1,7 +1,13 @@
+import 'package:camera/camera.dart';
+import 'package:filmhelper/camera.dart';
 import 'package:flutter/material.dart';
 import 'pages.dart'; // Import the pages file
 
-void main() {
+
+late List<CameraDescription> cameras;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   runApp(const MyApp());
 }
 
@@ -111,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
               child: Text(
                 'Welcome to the Light Meter App. \n',
@@ -122,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
               child: Text(
                 'Here you will select whether you are a beginner photographer and may need help figuring out what light settings you want, or you may be an expert looking for a little helping hand. \n'

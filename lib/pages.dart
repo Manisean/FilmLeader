@@ -1,3 +1,4 @@
+import 'package:filmhelper/camera.dart';
 import 'package:flutter/material.dart';
 
 class BeginnerPage extends StatefulWidget {
@@ -150,16 +151,16 @@ class FocusOption extends StatelessWidget {
 }
 
 
-class CameraPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Camera Page'),
-      ),
-      body: Center(
-        child: Text('This is the Camera Page'),
-      ),
-    );
-  }
-}
+// class CameraPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Camera Page'),
+//       ),
+//       body: Center(
+//         child: Text('This is the Camera Page'),
+//       ),
+//     );
+//   }
+// }
