@@ -26,6 +26,7 @@ class Camera extends StatefulWidget {
 
 class _CameraState extends State<Camera> {
   late CameraController _controller;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -34,8 +35,7 @@ class _CameraState extends State<Camera> {
     _controller.initialize().then((_) {
       if (!mounted) {
         return;
-      }
-      setState(() {});
+      }setState(() {});
     }).catchError((Object e) {
       if (e is CameraException) {
         switch (e.code) {
@@ -49,6 +49,7 @@ class _CameraState extends State<Camera> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,5 +59,11 @@ class _CameraState extends State<Camera> {
           child: CameraPreview(_controller),)
       ]),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 }
