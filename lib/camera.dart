@@ -1,6 +1,6 @@
-import 'package:camera/camera.dart';
 import 'package:filmhelper/main.dart';
 import 'package:flutter/material.dart';
+import 'package:manual_camera_pro/camera.dart';
 
 
 class CameraPage extends StatelessWidget {
@@ -31,7 +31,10 @@ class _CameraState extends State<Camera> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller = CameraController(cameras[0], ResolutionPreset.max);
+    _controller = CameraController(
+        cameras[0],
+        ResolutionPreset.max
+    );
     _controller.initialize().then((_) {
       if (!mounted) {
         return;
