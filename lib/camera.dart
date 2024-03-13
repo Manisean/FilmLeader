@@ -8,6 +8,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:exif/exif.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'metering.dart';
+
 
 class CameraPage extends StatelessWidget {
   const CameraPage({super.key});
@@ -35,6 +37,7 @@ class _CameraState extends State<Camera> {
 
   File? _imageFile;
   List<File> allFileList = [];
+  bool _clicked = false;
 
   bool _isCameraPermissionGranted = false;
 
@@ -123,7 +126,7 @@ class _CameraState extends State<Camera> {
       XFile file = await cameraController.takePicture();
       return file;
     } on CameraException catch (e) {
-      print('Error occured while taking picture: $e');
+      print('Error occurred while taking picture: $e');
       return null;
     }
   }
@@ -154,6 +157,7 @@ class _CameraState extends State<Camera> {
                         children: [
                           InkWell(
                             onTap: () async {
+                              _clicked = true;
                               XFile? rawImage = await takePicture();
                               File imageFile = File(rawImage!.path);
 
@@ -169,45 +173,54 @@ class _CameraState extends State<Camera> {
                                 '${directory.path}/$currentUnix.$fileFormat',
                               );
 
-                              printPicInfo('${directory.path}/$currentUnix.$fileFormat');
+                              //int metered =
+
+
 
                               refreshAlreadyCapturedImages();
+
+                              final metered = await printPicInfo('${directory.path}/$currentUnix.$fileFormat');
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => MeterPage(metered: metered)),
+                              );
                             },
                           ),
-                          InkWell(
-                            onTap: _imageFile != null ? () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PreviewScreen(
-                                        imageFile: _imageFile!,
-                                        fileList: allFileList,
-                                      ),
-                                ),
-                              );
-                            }
-                                : null,
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius:
-                                BorderRadius.circular(10.0),
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                                image: _imageFile != null
-                                    ? DecorationImage(
-                                  image:
-                                  FileImage(_imageFile!),
-                                  fit: BoxFit.cover,
-                                )
-                                    : null,
-                              ),
-                            ),
-                          ),
+                          // InkWell(
+                          //   onTap: _imageFile != null ? () {
+                          //     Navigator.of(context).push(
+                          //       MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             PreviewScreen(
+                          //               imageFile: _imageFile!,
+                          //               fileList: allFileList,
+                          //             ),
+                          //       ),
+                          //     );
+                          //   }
+                          //       : null,
+                          //   child: Container(
+                          //     width: 60,
+                          //     height: 60,
+                          //     decoration: BoxDecoration(
+                          //       color: Colors.black,
+                          //       borderRadius:
+                          //       BorderRadius.circular(10.0),
+                          //       border: Border.all(
+                          //         color: Colors.white,
+                          //         width: 2,
+                          //       ),
+                          //       image: _imageFile != null
+                          //           ? DecorationImage(
+                          //         image:
+                          //         FileImage(_imageFile!),
+                          //         fit: BoxFit.cover,
+                          //       )
+                          //           : null,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       )
                     ]
@@ -253,23 +266,29 @@ class _CameraState extends State<Camera> {
   printPicInfo(String path) async {
     final fileBytes = File(path).readAsBytesSync();
     final data = await readExifFromBytes(fileBytes);
-    print("BITCH");
+
     if (data.isEmpty) {
       print("No EXIF information found");
       return;
     }
 
+    List<dynamic> values = [];
+
     data.forEach((key, value) {
       if (key == "EXIF ExposureTime") {
         print((key,value));
+        values.add(value);
       } else if (key == "EXIF FNumber") {
         print((key,value));
+        values.add(value);
       } else if (key == "EXIF ISOSpeedRatings") {
         print((key,value));
+        values.add(value);
       }
 
     });
     print('----------------------------------');
+    return values;
   }
 
   @override
