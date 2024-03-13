@@ -1,12 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:filmhelper/main.dart';
-import 'package:filmhelper/preview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:exif/exif.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'metering.dart';
 
 
 class CameraPage extends StatelessWidget {
@@ -33,7 +34,6 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> {
   late CameraController _controller;
 
-  File? _imageFile;
   List<File> allFileList = [];
 
   bool _isCameraPermissionGranted = false;
@@ -101,15 +101,6 @@ class _CameraState extends State<Camera> {
         fileNames.add({0: int.parse(name), 1: file.path.split('/').last});
       }
     });
-
-    if (fileNames.isNotEmpty) {
-      final recentFile =
-      fileNames.reduce((curr, next) => curr[0] > next[0] ? curr : next);
-      String recentFileName = recentFile[1];
-      _imageFile = File('${directory.path}/$recentFileName');
-
-      setState(() {});
-    }
   }
 
 
@@ -123,7 +114,7 @@ class _CameraState extends State<Camera> {
       XFile file = await cameraController.takePicture();
       return file;
     } on CameraException catch (e) {
-      print('Error occured while taking picture: $e');
+      print('Error occurred while taking picture: $e');
       return null;
     }
   }
@@ -163,50 +154,19 @@ class _CameraState extends State<Camera> {
 
                               String fileFormat = imageFile.path.split('.').last;
 
-                              //print(fileFormat);
-
                               await imageFile.copy(
                                 '${directory.path}/$currentUnix.$fileFormat',
                               );
 
-                              printPicInfo('${directory.path}/$currentUnix.$fileFormat');
-
                               refreshAlreadyCapturedImages();
-                            },
-                          ),
-                          InkWell(
-                            onTap: _imageFile != null ? () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PreviewScreen(
-                                        imageFile: _imageFile!,
-                                        fileList: allFileList,
-                                      ),
-                                ),
+
+                              final metered = await printPicInfo('${directory.path}/$currentUnix.$fileFormat');
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => MeterPage(metered: metered)),
                               );
-                            }
-                                : null,
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius:
-                                BorderRadius.circular(10.0),
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                                image: _imageFile != null
-                                    ? DecorationImage(
-                                  image:
-                                  FileImage(_imageFile!),
-                                  fit: BoxFit.cover,
-                                )
-                                    : null,
-                              ),
-                            ),
+                            },
                           ),
                         ],
                       )
@@ -253,23 +213,29 @@ class _CameraState extends State<Camera> {
   printPicInfo(String path) async {
     final fileBytes = File(path).readAsBytesSync();
     final data = await readExifFromBytes(fileBytes);
-    print("BITCH");
+
     if (data.isEmpty) {
       print("No EXIF information found");
       return;
     }
 
+    List<dynamic> values = [];
+
     data.forEach((key, value) {
       if (key == "EXIF ExposureTime") {
         print((key,value));
+        values.add(value);
       } else if (key == "EXIF FNumber") {
         print((key,value));
+        values.add(value);
       } else if (key == "EXIF ISOSpeedRatings") {
         print((key,value));
+        values.add(value);
       }
 
     });
     print('----------------------------------');
+    return values;
   }
 
   @override
