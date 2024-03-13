@@ -49,8 +49,8 @@ class _CameraState extends State<Camera> {
     _controller = CameraController(
       cameras[0],
       ResolutionPreset.max,
-
     );
+
     _controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -145,6 +145,7 @@ class _CameraState extends State<Camera> {
                         children: [
                           InkWell(
                             onTap: () async {
+                              _controller.setFlashMode(FlashMode.off);
                               XFile? rawImage = await takePicture();
                               File imageFile = File(rawImage!.path);
 

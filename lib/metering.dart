@@ -51,7 +51,10 @@ class _MeterState extends State<Meter> {
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               // Add horizontal padding
               child: Text(
-                'f/      S      ISO\n$values\n',
+                // Shutter data is x/y = d, do the math for a decimal (d)
+                // 1/d = f, the denominator for the fractions (f) of a second
+                // display 1/f for traditional shutter speed format
+                'S      F/      ISO\n$values\n',
                 textAlign: TextAlign.center,
               ),
             ),
