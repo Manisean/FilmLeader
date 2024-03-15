@@ -29,7 +29,7 @@ class Meter extends StatefulWidget {
 
 class _MeterState extends State<Meter> {
   var fullStopShutter = [30, 15, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.066, 0.033, 0.016, 0.008, 0.004, 0.002, 0.001, 0.0005, 0.00025, 0.000125];
-  var fullStopAperature = [1.0, 1.4, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0, 22.0, 32.0];
+  var fullStopAperture = [1.0, 1.4, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0, 22.0, 32.0];
   var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
   int currentSetting = 0;
   bool isScrolling = false;
@@ -37,6 +37,45 @@ class _MeterState extends State<Meter> {
   FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: 3);
   FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: 15);
 
+
+  num capture(num value, List<num> greater, List<num> lesser) {
+    var compG = greater.first - value;
+    var compL = lesser.last - value;
+
+    if (compG.abs() < compL.abs()) {
+      return greater.first;
+    } else if (compL.abs() < compG.abs()) {
+      return lesser.last;
+    } else if (compG.abs() == 0 && compL.abs() == 0) {
+      return greater.first;
+    } else {
+      return 0;
+    }
+  }
+
+  void roundCapture(List<dynamic> values) {
+    List<num> greater;
+    List<num> lesser;
+
+    for (var i = 0; i < values.length; i++) {
+      if (i == 0) {
+        greater = fullStopShutter.where((val) => val >= values[i]).toList()..sort();
+        lesser = fullStopShutter.where((e) => e <= values[i]).toList()..sort();
+        values[i] = capture(values[i], greater, lesser);
+
+      } else if (i == 1) {
+        greater = fullStopAperture.where((val) => val >= values[i]).toList()..sort();
+        lesser = fullStopAperture.where((e) => e <= values[i]).toList()..sort();
+        values[i] = capture(values[i], greater, lesser);
+
+      } else if (i == 2) {
+        greater = fullStopISO.where((val) => val >= values[i]).toList()..sort();
+        lesser = fullStopISO.where((e) => e <= values[i]).toList()..sort();
+        values[i] = capture(values[i], greater, lesser);
+      }
+    }
+
+  }
 
   @override
   void initState() {
@@ -46,12 +85,24 @@ class _MeterState extends State<Meter> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> values = widget.metered;
+    //List<dynamic> values = [0.004001802, 1.85, 46];
 
     print('Values array: $values');
 
     values[0] = values[0].toString().split('/').map((value) => double.parse(value)).reduce((a, b) => a / b);
     values[1] = values[1].toString().split('/').map((value) => double.parse(value)).reduce((a, b) => a / b);
 
+    print('Values array: $values');
+
+    values[0] = values[0].toString();
+    values[1] = values[1].toString();
+    values[2] = values[2].toString();
+
+    values[0] = double.parse(values[0]);
+    values[1] = double.parse(values[1]);
+    values[2] = double.parse(values[2]);
+
+    roundCapture(values);
     print('Values array: $values');
 
     return Scaffold(
@@ -108,10 +159,10 @@ class _MeterState extends State<Meter> {
                       }
                     }),
                     childDelegate: ListWheelChildBuilderDelegate(
-                      childCount: fullStopAperature.length,
+                      childCount: fullStopAperture.length,
                       builder: (context, index) {
                         return Wheel(
-                          wheel: fullStopAperature[index],
+                          wheel: fullStopAperture[index],
                         );
                       },
                     ),
