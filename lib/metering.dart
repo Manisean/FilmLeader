@@ -75,9 +75,7 @@ class _MeterState extends State<Meter> {
     }
   }
 
-  //ap
   FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: 3);
-  //shutter
   FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: 15);
 
   @override
