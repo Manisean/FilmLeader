@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text(
                 'Here you will select whether you are a beginner photographer and may need help figuring out what light settings you want, or you may be an expert looking for a little helping hand. \n'
                     'If you are a beginner, you will be provided with questions to help figure out the best settings for you. If you are an expert, you will be taken directly to the camera portion of this app.\n'
-                    'This can be changed at any time in the settings menu.\n',
+                    'This can be changed at any time by returning to this menu.\n',
                 textAlign: TextAlign.center, // Center align the text
               ),
             ),
