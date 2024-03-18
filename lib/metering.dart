@@ -28,14 +28,13 @@ class Meter extends StatefulWidget {
 }
 
 class _MeterState extends State<Meter> {
-  var fullStopShutter = [30, 15, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.066, 0.033, 0.016, 0.008, 0.004, 0.002, 0.001, 0.0005, 0.00025, 0.000125];
+  var fullStopShutter = [30, 15, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.066, 0.033, 0.0166, 0.008, 0.004, 0.002, 0.001, 0.0005, 0.00025, 0.000125];
   var fullStopAperture = [1.0, 1.4, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0, 22.0, 32.0];
   var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
   int currentSetting = 0;
   bool isScrolling = false;
 
-  FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: 3);
-  FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: 15);
+
 
 
   num capture(num value, List<num> greater, List<num> lesser) {
@@ -74,8 +73,10 @@ class _MeterState extends State<Meter> {
         values[i] = capture(values[i], greater, lesser);
       }
     }
-
   }
+
+  FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: 3);
+  FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: 15);
 
   @override
   void initState() {
@@ -145,40 +146,6 @@ class _MeterState extends State<Meter> {
                     magnification: 1.5,
                     diameterRatio: 1.2,
                     physics: const FixedExtentScrollPhysics(),
-                    controller: scrollController1..addListener(() {
-                      if (!isScrolling) {
-                        isScrolling = true;
-                        final int indexDifference = scrollController1.initialItem - scrollController1.selectedItem;
-                        scrollController2.animateToItem(
-                          scrollController2.initialItem + indexDifference,
-                          curve: Curves.easeInOut,
-                          duration: const Duration(milliseconds: 100),
-                        ).whenComplete(() {
-                          isScrolling = false;
-                        });
-                      }
-                    }),
-                    childDelegate: ListWheelChildBuilderDelegate(
-                      childCount: fullStopAperture.length,
-                      builder: (context, index) {
-                        return Wheel(
-                          wheel: fullStopAperture[index],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 200,
-                  height: 600,
-                  child: ListWheelScrollView.useDelegate(
-                    //onSelectedItemChanged: (value) => print(value),
-                    itemExtent: 60,
-                    perspective: 0.005,
-                    useMagnifier: true,
-                    magnification: 1.5,
-                    diameterRatio: 1.2,
-                    physics: const FixedExtentScrollPhysics(),
                     controller: scrollController2..addListener(() {
                       if (!isScrolling) {
                         isScrolling = true;
@@ -198,6 +165,40 @@ class _MeterState extends State<Meter> {
                       builder: (context, index) {
                         return Wheel(
                           wheel: fullStopShutter[index],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 200,
+                  height: 600,
+                  child: ListWheelScrollView.useDelegate(
+                    //onSelectedItemChanged: (value) => print(value),
+                    itemExtent: 60,
+                    perspective: 0.005,
+                    useMagnifier: true,
+                    magnification: 1.5,
+                    diameterRatio: 1.2,
+                    physics: const FixedExtentScrollPhysics(),
+                    controller: scrollController1..addListener(() {
+                      if (!isScrolling) {
+                        isScrolling = true;
+                        final int indexDifference = scrollController1.initialItem - scrollController1.selectedItem;
+                        scrollController2.animateToItem(
+                          scrollController2.initialItem + indexDifference,
+                          curve: Curves.easeInOut,
+                          duration: const Duration(milliseconds: 100),
+                        ).whenComplete(() {
+                          isScrolling = false;
+                        });
+                      }
+                    }),
+                    childDelegate: ListWheelChildBuilderDelegate(
+                      childCount: fullStopAperture.length,
+                      builder: (context, index) {
+                        return Wheel(
+                          wheel: fullStopAperture[index],
                         );
                       },
                     ),
