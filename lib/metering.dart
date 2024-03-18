@@ -106,6 +106,12 @@ class _MeterState extends State<Meter> {
     roundCapture(values);
     print('Values array: $values');
 
+    int findShutter = fullStopShutter.indexOf(values[0]);
+    int findAp = fullStopAperture.indexOf(values[1]);
+
+    scrollController2 = FixedExtentScrollController(initialItem: findShutter);
+    scrollController1 = FixedExtentScrollController(initialItem: findAp);
+
     return Scaffold(
       body: Center(
         child: Column(
