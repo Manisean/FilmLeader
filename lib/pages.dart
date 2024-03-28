@@ -1,5 +1,6 @@
 import 'package:filmhelper/camera.dart';
 import 'package:flutter/material.dart';
+//import 'package:super_tooltip/super_tooltip.dart';
 
 class BeginnerPage extends StatefulWidget {
   @override
@@ -21,6 +22,12 @@ class _BeginnerPageState extends State<BeginnerPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            const Center(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: InfoButton(),
+                ),
+              ),
             const Center(
               child: Padding(
                 padding: EdgeInsets.only(left: 30.0, right: 30.0),
@@ -130,7 +137,7 @@ class FocusOption extends StatelessWidget {
     return ElevatedButton(
       onPressed: onSelect,
       style: ElevatedButton.styleFrom(
-        primary: selected ? Theme.of(context).primaryColor : null,
+        backgroundColor: selected ? Theme.of(context).primaryColor : null,
         elevation: selected ? 4 : 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -150,6 +157,51 @@ class FocusOption extends StatelessWidget {
   }
 }
 
+class InfoButton extends StatefulWidget {
+  const InfoButton({super.key});
+
+  @override
+  State<InfoButton> createState() =>
+      _InfoButtonState();
+}
+
+class _InfoButtonState extends State<InfoButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        IconButton(
+          icon: const Icon(Icons.info),
+          onPressed: () {
+            const DisplayText();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class DisplayText extends StatefulWidget {
+  const DisplayText({super.key});
+
+  @override
+  State<DisplayText> createState() =>
+    _DisplayTextState();
+}
+
+class _DisplayTextState extends State<DisplayText> {
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold (
+      body: Center(
+        child: Text('HELLLOOO',
+        textAlign: TextAlign.right
+        )
+        )
+    );
+  }
+}
 
 // class CameraPage extends StatelessWidget {
 //   @override

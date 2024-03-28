@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'list_wheel.dart';
@@ -27,14 +29,18 @@ class Meter extends StatefulWidget {
   State<Meter> createState() => _MeterState();
 }
 
+
 class _MeterState extends State<Meter> {
   var fullStopShutter = [30, 15, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.066, 0.033, 0.0166, 0.008, 0.004, 0.002, 0.001, 0.0005, 0.00025, 0.000125];
   var fullStopAperture = [1.0, 1.4, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0, 22.0, 32.0];
   var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
-  int currentSetting = 0;
   bool isScrolling = false;
-
-
+  //Which setting is being prioritized
+  // 0 = setting iso will preserve aperture value
+  // 1 = setting iso will preserve shutter speed value
+  int priority = 1;
+  late int blur;
+  late int focus;
 
 
   num capture(num value, List<num> greater, List<num> lesser) {
@@ -52,36 +58,92 @@ class _MeterState extends State<Meter> {
     }
   }
 
+
   void roundCapture(List<dynamic> values) {
-    List<num> greater;
-    List<num> lesser;
+    for (int i = 0; i < values.length; i++) {
+      List<num> fullStopValues = [];
 
-    for (var i = 0; i < values.length; i++) {
       if (i == 0) {
-        greater = fullStopShutter.where((val) => val >= values[i]).toList()..sort();
-        lesser = fullStopShutter.where((e) => e <= values[i]).toList()..sort();
-        values[i] = capture(values[i], greater, lesser);
-
+        fullStopValues = fullStopShutter.cast<num>();
       } else if (i == 1) {
-        greater = fullStopAperture.where((val) => val >= values[i]).toList()..sort();
-        lesser = fullStopAperture.where((e) => e <= values[i]).toList()..sort();
-        values[i] = capture(values[i], greater, lesser);
-
+        fullStopValues = fullStopAperture.cast<num>();
       } else if (i == 2) {
-        greater = fullStopISO.where((val) => val >= values[i]).toList()..sort();
-        lesser = fullStopISO.where((e) => e <= values[i]).toList()..sort();
-        values[i] = capture(values[i], greater, lesser);
+        fullStopValues = fullStopISO.cast<num>();
       }
+      // Find the nearest full-stop value for the current value
+      values[i] = fullStopValues.reduce((a, b) =>
+      (a - values[i]).abs() < (b - values[i]).abs() ? a : b);
     }
   }
 
-  FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: 3);
-  FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: 15);
+
+  // Method to calculate new value for shutter speed or aperture based on selected ISO
+  double adjustValueFullStop(List<dynamic> values, int oldISO, int newISO) {
+    // Calculate new value based on the inverse square law
+
+    int oldISOIndex = fullStopISO.indexOf(oldISO);
+    int newISOIndex = fullStopISO.indexOf(newISO);
+
+    print('INDEX OF OLD ISO: $oldISOIndex');
+    print('INDEX OF NEW ISO: $newISOIndex');
+
+    int diffIndex = oldISOIndex - newISOIndex;
+
+    print('INDEX DIFFERENCE: $diffIndex');
+
+    if(priority == 0) { //shutter
+      print('bitch $newISO');
+      int posIndex = diffIndex.abs();
+      newISO = oldISO;
+
+      if (diffIndex < 0) {
+        for (int i = 0; i < posIndex; i++) {
+          newISO *= 4;
+          print('CONVERTED ISO GREATER: $newISO'); // Output: 400, 1600, 6400
+        }
+      } else {
+        for (int i = 0; i < posIndex; i++) {
+          newISO ~/= 4;
+          print('CONVERTED ISO LESSER: $newISO'); // Output: 400, 1600, 6400
+        }
+      }
+
+      double newValue = values[priority] * sqrt(oldISO / newISO);
+      print('NEW VALUE $newValue');
+      if (newValue > fullStopShutter.first) {
+        int adjuster = fullStopShutter.indexOf(values[priority]) + diffIndex;
+        print('INDEX OF OVERFLOW: $adjuster');
+        values[1] = fullStopAperture[fullStopAperture.indexOf(values[1]) - adjuster];
+      } else if (newValue < fullStopShutter.last){
+        int adjuster = (fullStopShutter.indexOf(fullStopShutter.last) - fullStopShutter.indexOf(values[priority])) + diffIndex;
+        print('INDEX OF OVERFLOW: $adjuster');
+        values[1] = fullStopAperture[fullStopAperture.indexOf(values[1]) - adjuster];
+      } else {
+
+      }
+      return values[priority] * sqrt(oldISO / newISO);
+    } else { //aperture
+      double newValue = values[priority] * sqrt(newISO / oldISO);
+      if (newValue < fullStopAperture.first) {
+        int adjuster = fullStopAperture.indexOf(values[priority]) - diffIndex;
+        print('INDEX OF OVERFLOW: $adjuster');
+        values[0] = fullStopShutter[fullStopShutter.indexOf(values[0]) + adjuster];
+      } else if (newValue > fullStopAperture.last) {
+        int adjuster = (fullStopAperture.indexOf(fullStopAperture.last) - fullStopAperture.indexOf(values[priority])) + diffIndex;
+        print('INDEX OF OVERFLOW: $adjuster');
+        values[0] = fullStopShutter[fullStopShutter.indexOf(values[0]) - adjuster];
+      }
+      return values[priority] * sqrt(newISO / oldISO);
+    }
+
+  }
+
 
   @override
   void initState() {
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,11 +168,32 @@ class _MeterState extends State<Meter> {
     roundCapture(values);
     print('Values array: $values');
 
+    //newISO is the iso speed the user selects (when that page is implemented
+    int newISO = 200;
+
+    // TEMP VALUE FOR TESTING
+    //values[1] = 32.0;
+
+    values[priority] = adjustValueFullStop(values, values[2], newISO);
+
+    roundCapture(values);
+    values[2] = newISO;
+    print('post iso values array: $values');
+
     int findShutter = fullStopShutter.indexOf(values[0]);
     int findAp = fullStopAperture.indexOf(values[1]);
+    int findISO = fullStopISO.indexOf(values[2]);
 
-    scrollController2 = FixedExtentScrollController(initialItem: findShutter);
-    scrollController1 = FixedExtentScrollController(initialItem: findAp);
+    FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: findShutter);
+    FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: findAp);
+    FixedExtentScrollController scrollController3 = FixedExtentScrollController(initialItem: findISO);
+    late FixedExtentScrollController targetController;
+
+    if(priority == 0) {
+      targetController = scrollController1;
+    } else if(priority == 1) {
+      targetController = scrollController2;
+    }
 
     return Scaffold(
       body: Center(
@@ -142,42 +225,7 @@ class _MeterState extends State<Meter> {
             Row(
               children: <Widget>[
                 Container(
-                  width: 200,
-                  height: 600,
-                  child: ListWheelScrollView.useDelegate(
-                    //onSelectedItemChanged: (value) => print(value),
-                    itemExtent: 60,
-                    perspective: 0.005,
-                    useMagnifier: true,
-                    magnification: 1.5,
-                    diameterRatio: 1.2,
-                    physics: const FixedExtentScrollPhysics(),
-                    controller: scrollController2..addListener(() {
-                      if (!isScrolling) {
-                        isScrolling = true;
-                        final int indexDifference = scrollController2.initialItem - scrollController2.selectedItem;
-                        print(indexDifference);
-                        scrollController1.animateToItem(
-                          scrollController1.initialItem + indexDifference,
-                          curve: Curves.easeInOut,
-                          duration: const Duration(milliseconds: 100),
-                        ).whenComplete(() {
-                          isScrolling = false;
-                        });
-                      }
-                    }),
-                    childDelegate: ListWheelChildBuilderDelegate(
-                      childCount: fullStopShutter.length,
-                      builder: (context, index) {
-                        return Wheel(
-                          wheel: fullStopShutter[index],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 200,
+                  width: 135,
                   height: 600,
                   child: ListWheelScrollView.useDelegate(
                     //onSelectedItemChanged: (value) => print(value),
@@ -201,10 +249,78 @@ class _MeterState extends State<Meter> {
                       }
                     }),
                     childDelegate: ListWheelChildBuilderDelegate(
+                      childCount: fullStopShutter.length,
+                      builder: (context, index) {
+                        return Wheel(
+                          wheel: fullStopShutter[index],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 135,
+                  height: 600,
+                  child: ListWheelScrollView.useDelegate(
+                    //onSelectedItemChanged: (value) => print(value),
+                    itemExtent: 60,
+                    perspective: 0.005,
+                    useMagnifier: true,
+                    magnification: 1.5,
+                    diameterRatio: 1.2,
+                    physics: const FixedExtentScrollPhysics(),
+                    controller: scrollController2..addListener(() {
+                      if (!isScrolling) {
+                        isScrolling = true;
+                        final int indexDifference = scrollController2.initialItem - scrollController2.selectedItem;
+                        scrollController1.animateToItem(
+                          scrollController1.initialItem + indexDifference,
+                          curve: Curves.easeInOut,
+                          duration: const Duration(milliseconds: 100),
+                        ).whenComplete(() {
+                          isScrolling = false;
+                        });
+                      }
+                    }),
+                    childDelegate: ListWheelChildBuilderDelegate(
                       childCount: fullStopAperture.length,
                       builder: (context, index) {
                         return Wheel(
                           wheel: fullStopAperture[index],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 135,
+                  height: 600,
+                  child: ListWheelScrollView.useDelegate(
+                    //onSelectedItemChanged: (value) => print(value),
+                    itemExtent: 60,
+                    perspective: 0.005,
+                    useMagnifier: true,
+                    magnification: 1.5,
+                    diameterRatio: 1.2,
+                    physics: const FixedExtentScrollPhysics(),
+                    controller: scrollController3..addListener(() {
+                      if (!isScrolling) {
+                        isScrolling = true;
+                        final int indexDifference = scrollController3.initialItem - scrollController3.selectedItem;
+                        targetController.animateToItem(
+                          targetController.initialItem - indexDifference,
+                          curve: Curves.easeInOut,
+                          duration: const Duration(milliseconds: 100),
+                        ).whenComplete(() {
+                          isScrolling = false;
+                        });
+                      }
+                    }),
+                    childDelegate: ListWheelChildBuilderDelegate(
+                      childCount: fullStopISO.length,
+                      builder: (context, index) {
+                        return Wheel(
+                          wheel: fullStopISO[index],
                         );
                       },
                     ),

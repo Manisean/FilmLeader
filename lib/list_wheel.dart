@@ -14,7 +14,7 @@ class Wheel extends StatelessWidget {
           child: Text(
             wheel.toString(),
             style: const TextStyle(
-              fontSize: 40,
+              fontSize: 30,
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
