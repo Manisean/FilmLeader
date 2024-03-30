@@ -125,18 +125,12 @@ class _CameraState extends State<Camera> {
       body: _isCameraPermissionGranted
       ? Stack(
         children: [
-          Container(
+          SizedBox(
             height: double.infinity,
             child: Stack(
               children: [
                 CameraPreview(_controller),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    16.0,
-                    8.0,
-                    16.0,
-                    8.0,
-                  ),
+                SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -190,7 +184,7 @@ class _CameraState extends State<Camera> {
               fontSize: 24,
             ),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
               getPermissionStatus();

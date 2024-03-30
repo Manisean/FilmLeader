@@ -212,7 +212,7 @@ class _MeterState extends State<Meter> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               // Add horizontal padding
               child: Text(
                 // Shutter data is x/y = d, do the math for a decimal (d)
@@ -224,7 +224,7 @@ class _MeterState extends State<Meter> {
             ),
             Row(
               children: <Widget>[
-                Container(
+                SizedBox(
                   width: 135,
                   height: 600,
                   child: ListWheelScrollView.useDelegate(
@@ -258,7 +258,7 @@ class _MeterState extends State<Meter> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 135,
                   height: 600,
                   child: ListWheelScrollView.useDelegate(
@@ -292,7 +292,7 @@ class _MeterState extends State<Meter> {
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 135,
                   height: 600,
                   child: ListWheelScrollView.useDelegate(
@@ -328,7 +328,7 @@ class _MeterState extends State<Meter> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
