@@ -1,5 +1,29 @@
 import 'package:filmhelper/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'settings.dart';
+
+class PreferencesManager {
+  static SharedPreferences? _prefs;
+
+  static Future<void> initialize() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  static int get selectedFocusGroup1 =>
+      _prefs?.getInt('selectedFocusGroup1') ?? -1;
+
+  static int get selectedFocusGroup2 =>
+      _prefs?.getInt('selectedFocusGroup2') ?? -1;
+
+  static Future<void> setSelectedFocusGroup1(int value) async {
+    await _prefs?.setInt('selectedFocusGroup1', value);
+  }
+
+  static Future<void> setSelectedFocusGroup2(int value) async {
+    await _prefs?.setInt('selectedFocusGroup2', value);
+  }
+}
 
 class BeginnerPage extends StatefulWidget {
   @override
@@ -7,14 +31,37 @@ class BeginnerPage extends StatefulWidget {
 }
 
 class _BeginnerPageState extends State<BeginnerPage> {
-  int _selectedFocusGroup1 = -1;
-  int _selectedFocusGroup2 = -1;
+  late int _selectedFocusGroup1;
+  late int _selectedFocusGroup2;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedFocusGroup1 = PreferencesManager.selectedFocusGroup1;
+    _selectedFocusGroup2 = PreferencesManager.selectedFocusGroup2;
+  }
+
+  void _updatePreferences() {
+    PreferencesManager.setSelectedFocusGroup1(_selectedFocusGroup1);
+    PreferencesManager.setSelectedFocusGroup2(_selectedFocusGroup2);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Beginner Page'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(

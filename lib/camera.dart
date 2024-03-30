@@ -8,7 +8,7 @@ import 'package:exif/exif.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'metering.dart';
-
+import 'settings.dart';
 
 class CameraPage extends StatelessWidget {
   const CameraPage({super.key});
@@ -18,6 +18,17 @@ class CameraPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Camera Page'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Camera(),
     );
