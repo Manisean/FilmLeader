@@ -1,6 +1,11 @@
-import 'package:filmhelper/pages.dart';
+// import 'package:filmhelper/pages.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
+
+int selectedFocusGroup1 = -1;
+int selectedFocusGroup2 = -1;
+
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -29,13 +34,8 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _selectedFocusGroup1 = PreferencesManager.selectedFocusGroup1;
-    _selectedFocusGroup2 = PreferencesManager.selectedFocusGroup2;
-  }
-
-  void _updatePreferences() {
-    PreferencesManager.setSelectedFocusGroup1(_selectedFocusGroup1);
-    PreferencesManager.setSelectedFocusGroup2(_selectedFocusGroup2);
+    _selectedFocusGroup1 = selectedFocusGroup1;
+    _selectedFocusGroup2 = selectedFocusGroup2;
   }
 
   @override
@@ -49,9 +49,9 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Center(
+        Center(
               child: Column(
-                children: [
+                children: <Widget>[
                   const Center(
                     child: Text(
                       'FOCUS',
@@ -63,7 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   SizedBox(height: 20),
                   DropdownButton<int>(
-                    value: 0,
+                    value: _selectedFocusGroup1,
                     hint: Text(_selectedFocusGroup1Text.isNotEmpty ? _selectedFocusGroup1Text : 'Select Focus'),
                     onChanged: (int? value) {
                       if (value != null) {
@@ -74,6 +74,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       }
                     },
                     items: [
+                      DropdownMenuItem<int>(
+                        value: -1,
+                        child: Text('Select Option'),
+                      ),
                       DropdownMenuItem<int>(
                         value: 0,
                         child: Text('Little in Focus'),
@@ -99,16 +103,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   SizedBox(height: 20),
                   DropdownButton<int>(
-                    value: 0,
+                    value: _selectedFocusGroup2,
                     hint: Text(_selectedFocusGroup2Text.isNotEmpty ? _selectedFocusGroup2Text : 'Select Blur'),
                     onChanged: (int? value) {
                       if (value != null) {
                       setState(() {
+                        _selectedFocusGroup2 = value;
                         _selectedFocusGroup2Text = ['Little Blur', 'Some Blur', 'Lots of Blur'][value];
                       });
                       }
                     },
                     items: [
+                      DropdownMenuItem<int>(
+                        value: -1,
+                        child: Text('Select Option'),
+                      ),
                       DropdownMenuItem<int>(
                         value: 0,
                         child: Text('Little Blur'),
@@ -124,6 +133,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      selectedFocusGroup1 = _selectedFocusGroup1;
+                      selectedFocusGroup2 = _selectedFocusGroup2;
+                    },
+                    child: Text('Save Preferences'),
+                  ),
                 ],
               ),
             ),
