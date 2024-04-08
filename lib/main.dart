@@ -4,13 +4,19 @@ import 'pages.dart'; // Import the pages file
 //import 'package:manual_camera_pro/camera.dart';
 import 'package:camera/camera.dart';
 import 'settings.dart';
+import 'package:provider/provider.dart';
 
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider<ThemeNotifier>(
+      create: (_) => ThemeNotifier(), // Create a provider for managing theme state
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,17 +25,39 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
-        useMaterial3: true,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Welcome to Light Meter!'),
+    return Consumer<ThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return MaterialApp(
+          theme: themeNotifier.getTheme(), // Set the theme based on ThemeNotifier
+          darkTheme: ThemeData.dark(), // Use built-in dark theme
+          home: MyHomePage(title: 'Welcome to Light Meter!'),
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/settings': (context) => SettingsPage(),
+          },
+        );
+      },
     );
   }
 }
+
+// Dark Mode Settings
+class ThemeNotifier extends ChangeNotifier {
+  ThemeData _lightThemeData = ThemeData(
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
+    useMaterial3: true,
+  );
+
+  ThemeData _themeData = ThemeData.light(); // Default theme is light
+
+  ThemeData getTheme() => _themeData; // Getter for current theme
+
+  void setDarkMode(bool isDarkMode) {
+    _themeData = isDarkMode ? ThemeData.dark() : _lightThemeData;
+    notifyListeners(); // Notify listeners that theme has changed
+  }
+}
+
 
 //testing changes
 
