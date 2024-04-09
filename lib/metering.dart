@@ -200,7 +200,7 @@ class _MeterState extends State<Meter> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'Meter \n',
@@ -222,111 +222,113 @@ class _MeterState extends State<Meter> {
                 textAlign: TextAlign.center,
               ),
             ),
-            Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 135,
-                  height: 600,
-                  child: ListWheelScrollView.useDelegate(
-                    //onSelectedItemChanged: (value) => print(value),
-                    itemExtent: 60,
-                    perspective: 0.005,
-                    useMagnifier: true,
-                    magnification: 1.5,
-                    diameterRatio: 1.2,
-                    physics: const FixedExtentScrollPhysics(),
-                    controller: scrollController1..addListener(() {
-                      if (!isScrolling) {
-                        isScrolling = true;
-                        final int indexDifference = scrollController1.initialItem - scrollController1.selectedItem;
-                        scrollController2.animateToItem(
-                          scrollController2.initialItem + indexDifference,
-                          curve: Curves.easeInOut,
-                          duration: const Duration(milliseconds: 100),
-                        ).whenComplete(() {
-                          isScrolling = false;
-                        });
-                      }
-                    }),
-                    childDelegate: ListWheelChildBuilderDelegate(
-                      childCount: fullStopShutter.length,
-                      builder: (context, index) {
-                        return Wheel(
-                          wheel: fullStopShutter[index],
-                        );
-                      },
+            Expanded(
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 125,
+                    height: 600,
+                    child: ListWheelScrollView.useDelegate(
+                      //onSelectedItemChanged: (value) => print(value),
+                      itemExtent: 60,
+                      perspective: 0.005,
+                      useMagnifier: true,
+                      magnification: 1.5,
+                      diameterRatio: 1.2,
+                      physics: const FixedExtentScrollPhysics(),
+                      controller: scrollController1..addListener(() {
+                        if (!isScrolling) {
+                          isScrolling = true;
+                          final int indexDifference = scrollController1.initialItem - scrollController1.selectedItem;
+                          scrollController2.animateToItem(
+                            scrollController2.initialItem + indexDifference,
+                            curve: Curves.easeInOut,
+                            duration: const Duration(milliseconds: 100),
+                          ).whenComplete(() {
+                            isScrolling = false;
+                          });
+                        }
+                      }),
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        childCount: fullStopShutter.length,
+                        builder: (context, index) {
+                          return Wheel(
+                            wheel: fullStopShutter[index],
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 135,
-                  height: 600,
-                  child: ListWheelScrollView.useDelegate(
-                    //onSelectedItemChanged: (value) => print(value),
-                    itemExtent: 60,
-                    perspective: 0.005,
-                    useMagnifier: true,
-                    magnification: 1.5,
-                    diameterRatio: 1.2,
-                    physics: const FixedExtentScrollPhysics(),
-                    controller: scrollController2..addListener(() {
-                      if (!isScrolling) {
-                        isScrolling = true;
-                        final int indexDifference = scrollController2.initialItem - scrollController2.selectedItem;
-                        scrollController1.animateToItem(
-                          scrollController1.initialItem + indexDifference,
-                          curve: Curves.easeInOut,
-                          duration: const Duration(milliseconds: 100),
-                        ).whenComplete(() {
-                          isScrolling = false;
-                        });
-                      }
-                    }),
-                    childDelegate: ListWheelChildBuilderDelegate(
-                      childCount: fullStopAperture.length,
-                      builder: (context, index) {
-                        return Wheel(
-                          wheel: fullStopAperture[index],
-                        );
-                      },
+                  SizedBox(
+                    width: 125,
+                    height: 600,
+                    child: ListWheelScrollView.useDelegate(
+                      //onSelectedItemChanged: (value) => print(value),
+                      itemExtent: 60,
+                      perspective: 0.005,
+                      useMagnifier: true,
+                      magnification: 1.5,
+                      diameterRatio: 1.2,
+                      physics: const FixedExtentScrollPhysics(),
+                      controller: scrollController2..addListener(() {
+                        if (!isScrolling) {
+                          isScrolling = true;
+                          final int indexDifference = scrollController2.initialItem - scrollController2.selectedItem;
+                          scrollController1.animateToItem(
+                            scrollController1.initialItem + indexDifference,
+                            curve: Curves.easeInOut,
+                            duration: const Duration(milliseconds: 100),
+                          ).whenComplete(() {
+                            isScrolling = false;
+                          });
+                        }
+                      }),
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        childCount: fullStopAperture.length,
+                        builder: (context, index) {
+                          return Wheel(
+                            wheel: fullStopAperture[index],
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 135,
-                  height: 600,
-                  child: ListWheelScrollView.useDelegate(
-                    //onSelectedItemChanged: (value) => print(value),
-                    itemExtent: 60,
-                    perspective: 0.005,
-                    useMagnifier: true,
-                    magnification: 1.5,
-                    diameterRatio: 1.2,
-                    physics: const FixedExtentScrollPhysics(),
-                    controller: scrollController3..addListener(() {
-                      if (!isScrolling) {
-                        isScrolling = true;
-                        final int indexDifference = scrollController3.initialItem - scrollController3.selectedItem;
-                        targetController.animateToItem(
-                          targetController.initialItem - indexDifference,
-                          curve: Curves.easeInOut,
-                          duration: const Duration(milliseconds: 100),
-                        ).whenComplete(() {
-                          isScrolling = false;
-                        });
-                      }
-                    }),
-                    childDelegate: ListWheelChildBuilderDelegate(
-                      childCount: fullStopISO.length,
-                      builder: (context, index) {
-                        return Wheel(
-                          wheel: fullStopISO[index],
-                        );
-                      },
+                  SizedBox(
+                    width: 125,
+                    height: 600,
+                    child: ListWheelScrollView.useDelegate(
+                      //onSelectedItemChanged: (value) => print(value),
+                      itemExtent: 60,
+                      perspective: 0.005,
+                      useMagnifier: true,
+                      magnification: 1.5,
+                      diameterRatio: 1.2,
+                      physics: const FixedExtentScrollPhysics(),
+                      controller: scrollController3..addListener(() {
+                        if (!isScrolling) {
+                          isScrolling = true;
+                          final int indexDifference = scrollController3.initialItem - scrollController3.selectedItem;
+                          targetController.animateToItem(
+                            targetController.initialItem - indexDifference,
+                            curve: Curves.easeInOut,
+                            duration: const Duration(milliseconds: 100),
+                          ).whenComplete(() {
+                            isScrolling = false;
+                          });
+                        }
+                      }),
+                      childDelegate: ListWheelChildBuilderDelegate(
+                        childCount: fullStopISO.length,
+                        builder: (context, index) {
+                          return Wheel(
+                            wheel: fullStopISO[index],
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 20),
           ],
