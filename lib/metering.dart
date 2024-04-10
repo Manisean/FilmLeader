@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'list_wheel.dart';
 
 
-//.
 class MeterPage extends StatelessWidget {
   final List<dynamic> metered;
-  const MeterPage({super.key, required this.metered});
+  final int newISO;
+  const MeterPage({super.key, required this.metered, required this.newISO});
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +16,15 @@ class MeterPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Meter Page'),
       ),
-      body: Meter(metered: metered),
+      body: Meter(metered: metered, newISO: newISO),
     );
   }
 }
 
 class Meter extends StatefulWidget {
   final List<dynamic> metered;
-  const Meter({super.key, required this.metered});
+  final int newISO;
+  const Meter({super.key, required this.metered, required this.newISO});
 
   @override
   State<Meter> createState() => _MeterState();
@@ -92,19 +93,18 @@ class _MeterState extends State<Meter> {
     print('INDEX DIFFERENCE: $diffIndex');
 
     if(priority == 0) { //shutter
-      print('bitch $newISO');
       int posIndex = diffIndex.abs();
       newISO = oldISO;
 
       if (diffIndex < 0) {
         for (int i = 0; i < posIndex; i++) {
           newISO *= 4;
-          print('CONVERTED ISO GREATER: $newISO'); // Output: 400, 1600, 6400
+          print('CONVERTED ISO GREATER: $newISO');
         }
       } else {
         for (int i = 0; i < posIndex; i++) {
           newISO ~/= 4;
-          print('CONVERTED ISO LESSER: $newISO'); // Output: 400, 1600, 6400
+          print('CONVERTED ISO LESSER: $newISO');
         }
       }
 
@@ -148,7 +148,6 @@ class _MeterState extends State<Meter> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> values = widget.metered;
-    //List<dynamic> values = [0.004001802, 1.85, 46];
 
     print('Values array: $values');
 
@@ -169,7 +168,8 @@ class _MeterState extends State<Meter> {
     print('Values array: $values');
 
     //newISO is the iso speed the user selects (when that page is implemented
-    int newISO = 200;
+    int newISO = widget.newISO;
+    print('imported ISO: ' + widget.newISO.toString());
 
     // TEMP VALUE FOR TESTING
     //values[1] = 32.0;

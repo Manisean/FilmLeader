@@ -168,7 +168,7 @@ class _CameraState extends State<Camera> {
                               refreshAlreadyCapturedImages();
 
                               final metered = await printPicInfo('${directory.path}/$currentUnix.$fileFormat');
-//.
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => ISOPage(metered: metered)),
