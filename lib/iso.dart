@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'list_wheel.dart';
@@ -31,13 +33,51 @@ class ISO extends StatefulWidget {
 
 class _ISOState extends State<ISO> {
   var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
-
+  List<dynamic> filmList = ["Kodak Ektar", "Kodak Pro", "Kodak Chrome",
+    "Fomapan", "Lomography", "Flic Chrome", "Flic Ektar",
+    "Rollei RPX", "Kentmere"];
+  late int newISO = 100;
 
   @override
   void initState() {
     super.initState();
   }
 
+  List<String> getFilmList(int isoValue) {
+    switch (isoValue) {
+      case 25:
+        return ["Rollei RPX", "Rollei Ortho", "Rollei Ortho+", "Kodak Ektar"];
+      case 50:
+        return ["Ilford Paf F+", "CineStill", "Ferrania Orto", "Fujifulm Fujichrome"];
+      case 100:
+        return ["Kodak Ektar", "Kodak Pro", "Kodak Chrome",
+          "Fomapan", "Lomography", "Flic Chrome", "Flic Ektar",
+          "Rollei RPX", "Kentmere"];
+      case 200:
+        return ["Kodak Gold", "Kodak Color+", "Fujifilm Fujicolor", "Arista Edu Ultra",
+        "Harman Phoenix", "Foma Fomapan", "Rollei Superpan"];
+      case 400:
+        return ["Kodak UltraMax", "Fujifilm Superia X-TRA", "Kodak Tri-X", "LomoChrome Purple",
+        "Lomography", "Lomography Berlin", "Revolog Kolor", "Rollei RPX"];
+      case 800:
+        return ["Kodak Portra", "Kodak Max", "Kodak Max Versa+", "Dubblefilm Cinema",
+          "Lomography", "VIBE Max", "Flic Film Aurora", "CineStill"];
+      case 1600:
+        return ["Fujifilm Superia", "Fujifilm Natura"];
+      case 3200:
+        return ["Kodak Pro T-Max", "Ilford Delta"];
+      case 6400:
+        return [""];
+      default:
+        return [""];
+    }
+  }
+
+  void setFilmList(List<String> list) {
+    setState(() {
+      filmList = list;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +85,16 @@ class _ISOState extends State<ISO> {
     values[2] = values[2].toString();
     values[2] = int.parse(values[2]);
 
-    //int findISO = fullStopISO.indexOf(values[2]);
+    int findISO = fullStopISO.indexOf(values[2]);
 
-    FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: 0);
+    FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: findISO);
+    FixedExtentScrollController scrollController2 = FixedExtentScrollController();
 
-    int newISO = fullStopISO[0];
+    String filmSelection = "";
 
     return Scaffold(
       body: Center(
+        child: Expanded(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -62,7 +104,7 @@ class _ISOState extends State<ISO> {
                 'ISO \n',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -78,11 +120,11 @@ class _ISOState extends State<ISO> {
                 textAlign: TextAlign.center,
               ),
             ),
-            Row(
+            Expanded(
+            child: Row(
               children: <Widget>[
-
                 SizedBox(
-                  width: 135,
+                  width: 100,
                   height: 600,
                   child: ListWheelScrollView.useDelegate(
                     itemExtent: 60,
@@ -93,7 +135,7 @@ class _ISOState extends State<ISO> {
                     physics: const FixedExtentScrollPhysics(),
                     controller: scrollController..addListener(() {
                       newISO = fullStopISO[scrollController.selectedItem];
-                      print(newISO);
+                      setFilmList(getFilmList(newISO));
                     }),
                     childDelegate: ListWheelChildBuilderDelegate(
                       childCount: fullStopISO.length,
@@ -105,19 +147,46 @@ class _ISOState extends State<ISO> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO)),
-                    );
-                  },
-                  child: Text('Select'),
+                Expanded(
+                  flex: 2,
+                child: SizedBox(
+                  width: 135,
+                  height: 600,
+                  child: ListWheelScrollView.useDelegate(
+                    itemExtent: 60,
+                    perspective: 0.005,
+                    useMagnifier: false,
+                    diameterRatio: 1.2,
+                    physics: const FixedExtentScrollPhysics(),
+                    controller: scrollController2..addListener(() {
+                      filmSelection = filmList[scrollController.selectedItem];
+                    }),
+                    childDelegate: ListWheelChildBuilderDelegate(
+                      childCount: filmList.length,
+                      builder: (context, index) {
+                        return Wheel(
+                          wheel: filmList[index],
+                        );
+                      }
+                    ),
+                  )
+                ),
                 ),
               ],
             ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection)),
+                );
+              },
+              child: Text('Submit ISO'),
+            ),
             const SizedBox(height: 20),
           ],
+        ),
         ),
       ),
     );

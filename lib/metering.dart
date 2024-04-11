@@ -1,14 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
 import 'list_wheel.dart';
 
 
 class MeterPage extends StatelessWidget {
   final List<dynamic> metered;
   final int newISO;
-  const MeterPage({super.key, required this.metered, required this.newISO});
+  final String selectedFilm;
+  const MeterPage({super.key, required this.metered, required this.newISO, required this.selectedFilm});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class MeterPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Meter Page'),
       ),
-      body: Meter(metered: metered, newISO: newISO),
+      body: Meter(metered: metered, newISO: newISO, selectedFilm: selectedFilm,),
     );
   }
 }
@@ -24,7 +24,8 @@ class MeterPage extends StatelessWidget {
 class Meter extends StatefulWidget {
   final List<dynamic> metered;
   final int newISO;
-  const Meter({super.key, required this.metered, required this.newISO});
+  final String selectedFilm;
+  const Meter({super.key, required this.metered, required this.newISO, required this.selectedFilm});
 
   @override
   State<Meter> createState() => _MeterState();
@@ -43,15 +44,13 @@ class _MeterState extends State<Meter> {
   late int priority;
   int preference = 6;
 
-
-  num recFailure(double shutter) {
+  num recFailure(num shutter) {
     if (shutter > 1) {
       return (pow(shutter, 1.3)).round();
     } else {
       return 0;
     }
   }
-
 
   int prioritySet(int preference) {
     if (preference >= 0 && preference <= 3) {
@@ -60,7 +59,6 @@ class _MeterState extends State<Meter> {
       return 1;
     }
   }
-
 
   num capture(num value, List<num> greater, List<num> lesser) {
     var compG = greater.first - value;
@@ -166,6 +164,7 @@ class _MeterState extends State<Meter> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> values = widget.metered;
+    String alertMsg = "";
 
     print('Values array: $values');
 
@@ -256,7 +255,7 @@ class _MeterState extends State<Meter> {
         scrollController2 = FixedExtentScrollController(initialItem: findAp);
         break;
     }
-    
+
 
     // if(priority == 0) {
     //   targetController = scrollController1;
@@ -399,15 +398,34 @@ class _MeterState extends State<Meter> {
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO)),
-                );
-              },
-              child: Text('Select'),
-            ),
+        ElevatedButton(
+          onPressed: () {
+
+            if (recFailure(fullStopShutter[scrollController1.selectedItem]) == 0) {
+              alertMsg = "Reciprocity failure has not set in, please try different settings";
+            } else if (recFailure(fullStopShutter[scrollController1.selectedItem]) != 0) {
+              alertMsg = "It's recommended to manually adjust the shutter speed on your camera to "
+                  "${recFailure(fullStopShutter[scrollController1.selectedItem])} seconds to account for reciprocity failure";
+            }
+
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text("Close")
+                  )
+                ],
+                contentPadding: const EdgeInsets.all(20.0),
+                content: Text(alertMsg),
+              ),
+            );
+          },
+          child: Text('Submit Selection'),
+        ),
             const SizedBox(height: 20),
           ],
         ),
@@ -415,3 +433,4 @@ class _MeterState extends State<Meter> {
     );
   }
 }
+
