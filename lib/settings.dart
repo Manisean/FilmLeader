@@ -1,5 +1,7 @@
 // import 'package:filmhelper/pages.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 
 int selectedFocusGroup1 = -1;
@@ -11,6 +13,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.light, // Default theme is light
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark, // Dark theme
+      ),
       home: MyHomePage(title: 'Home Page'),
       routes: {
         '/settings': (context) => SettingsPage(),
@@ -25,17 +33,33 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  int _selectedFocusGroup1 = -1;
+  /*int _selectedFocusGroup1 = -1;
   int _selectedFocusGroup2 = -1;
 
   String _selectedFocusGroup1Text = '';
-  String _selectedFocusGroup2Text = '';
+  String _selectedFocusGroup2Text = '';*/
+  late bool _isDarkMode;
 
   @override
   void initState() {
     super.initState();
-    _selectedFocusGroup1 = selectedFocusGroup1;
-    _selectedFocusGroup2 = selectedFocusGroup2;
+    //_selectedFocusGroup1 = selectedFocusGroup1;
+    //_selectedFocusGroup2 = selectedFocusGroup2;
+    _loadDarkModeState();
+  }
+
+  // Load dark mode state from shared preferences
+  void _loadDarkModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    });
+  }
+
+  // Save dark mode state to shared preferences
+  void _saveDarkModeState(bool isDarkMode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', isDarkMode);
   }
 
   @override
@@ -52,16 +76,26 @@ class _SettingsPageState extends State<SettingsPage> {
         Center(
               child: Column(
                 children: <Widget>[
-                  const Center(
-                    child: Text(
-                      'FOCUS',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Dark Mode  ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  Switch(
+                    value: _isDarkMode ?? false,
+                    onChanged: (value) {
+                      setState(() {
+                        _isDarkMode = value; // Update local state
+                        _saveDarkModeState(value); // Save state to shared preferences
+                        Provider.of<ThemeNotifier>(context, listen: false)
+                            .setDarkMode(value); // Notify ThemeNotifier
+                      });
+                    },
+                  ),
+                  /*
                   DropdownButton<int>(
                     value: _selectedFocusGroup1,
                     hint: Text(_selectedFocusGroup1Text.isNotEmpty ? _selectedFocusGroup1Text : 'Select Focus'),
@@ -139,13 +173,47 @@ class _SettingsPageState extends State<SettingsPage> {
                       selectedFocusGroup2 = _selectedFocusGroup2;
                     },
                     child: Text('Save Preferences'),
-                  ),
+                  ),*/
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class ButtonSlider extends StatefulWidget {
+  @override
+  _ButtonSliderState createState() => _ButtonSliderState();
+}
+
+class _ButtonSliderState extends State<ButtonSlider> {
+  bool isDarkMode = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Dark Mode  ',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Switch(
+          value: isDarkMode,
+          onChanged: (value) {
+            setState(() {
+              isDarkMode = value;
+            });
+          },
+        ),
+      ],
     );
   }
 }
