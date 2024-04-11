@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Wheel extends StatelessWidget {
   var wheel;
 
-  Wheel({required this.wheel});
+  Wheel({super.key, required this.wheel});
 
   @override
   Widget build(BuildContext context) {

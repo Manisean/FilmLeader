@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:exif/exif.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'iso.dart';
 import 'metering.dart';
 import 'settings.dart';
 
@@ -170,7 +171,7 @@ class _CameraState extends State<Camera> {
 
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => MeterPage(metered: metered)),
+                                MaterialPageRoute(builder: (context) => ISOPage(metered: metered)),
                               );
                             },
                           ),
