@@ -48,7 +48,10 @@ class ThemeNotifier extends ChangeNotifier {
     useMaterial3: true,
   );
 
-  ThemeData _themeData = ThemeData.light(); // Default theme is light
+  ThemeData _themeData = ThemeData(
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
+    useMaterial3: true,
+  ); // Default theme is light
 
   ThemeData getTheme() => _themeData; // Getter for current theme
 

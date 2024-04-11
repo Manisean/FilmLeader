@@ -10,13 +10,13 @@ class BeginnerPage extends StatefulWidget {
 
 class _BeginnerPageState extends State<BeginnerPage> {
   late int _selectedFocusGroup1 = -1;
-  late int _selectedFocusGroup2 = -1;
+  late int _selectedPreferenceCalculation = -1;
 
   @override
   void initState() {
     super.initState();
     _selectedFocusGroup1 = selectedFocusGroup1;
-    _selectedFocusGroup2 = selectedFocusGroup2;
+    _selectedPreferenceCalculation = selectedFocusGroup1;
   }
 
   @override
@@ -36,7 +36,7 @@ class _BeginnerPageState extends State<BeginnerPage> {
               if (result != null && result is Map<String, int?>) {
                 setState(() {
                   _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
-                  _selectedFocusGroup2 = result['selectedFocusGroup2'] ?? -1;
+                  _selectedPreferenceCalculation = _selectedFocusGroup1 + 1;
                 });
               }
             },
@@ -67,11 +67,11 @@ class _BeginnerPageState extends State<BeginnerPage> {
             ),
 
             // Use the global variables directly in your UI
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 6; i++)
               FocusOption(
                 key: ValueKey<int>(i),
                 index: i,
-                label: ['Little in Focus', 'Some in Focus', 'Lots in Focus'][i],
+                label: ['Little in Focus', 'Some in Focus', 'Lots in Focus','Little Blur', 'Some Blur', 'Lots of Blur'][i],
                 selected: selectedFocusGroup1 == i,
                 onSelect: () {
                   setState(() {
@@ -80,7 +80,7 @@ class _BeginnerPageState extends State<BeginnerPage> {
                 },
               ),
             const SizedBox(height: 20),
-            for (int i = 0; i < 3; i++)
+            /*for (int i = 0; i < 3; i++)
               FocusOption(
                 key: ValueKey<int>(i + 3),
                 index: i + 3,
@@ -91,9 +91,9 @@ class _BeginnerPageState extends State<BeginnerPage> {
                     selectedFocusGroup2 = i;
                   });
                 },
-              ),
+              ),*/
             ElevatedButton(
-              onPressed: (selectedFocusGroup1 != -1 && selectedFocusGroup2 != -1)
+              onPressed: (selectedFocusGroup1 != -1)
                   ? () {
                 Navigator.push(
                   context,

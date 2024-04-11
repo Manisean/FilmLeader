@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:filmhelper/settings.dart';
 import 'package:flutter/material.dart';
 
 import 'list_wheel.dart';
@@ -15,6 +16,17 @@ class MeterPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Meter Page'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Meter(metered: metered),
     );
