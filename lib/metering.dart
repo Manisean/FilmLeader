@@ -33,15 +33,33 @@ class Meter extends StatefulWidget {
 
 class _MeterState extends State<Meter> {
   var fullStopShutter = [30, 15, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.066, 0.033, 0.0166, 0.008, 0.004, 0.002, 0.001, 0.0005, 0.00025, 0.000125];
+  var fullStopShutterScreen = ['30', '15', '8', '4', '2', '1', '1/2', '1/4', '1/8', '1/15', '1/30', '1/60', '1/125', '1/250', '1/500', '1/1000', '1/2000', '1/4000', '1/8000'];
   var fullStopAperture = [1.0, 1.4, 2.0, 2.8, 4.0, 5.6, 8.0, 11.0, 16.0, 22.0, 32.0];
   var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
   bool isScrolling = false;
   //Which setting is being prioritized
   // 0 = setting iso will preserve aperture value
   // 1 = setting iso will preserve shutter speed value
-  int priority = 1;
-  late int blur;
-  late int focus;
+  late int priority;
+  int preference = 6;
+
+
+  num recFailure(double shutter) {
+    if (shutter > 1) {
+      return (pow(shutter, 1.3)).round();
+    } else {
+      return 0;
+    }
+  }
+
+
+  int prioritySet(int preference) {
+    if (preference >= 0 && preference <= 3) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
 
 
   num capture(num value, List<num> greater, List<num> lesser) {
@@ -173,8 +191,9 @@ class _MeterState extends State<Meter> {
 
     // TEMP VALUE FOR TESTING
     //values[1] = 32.0;
-
+    priority = prioritySet(preference);
     values[priority] = adjustValueFullStop(values, values[2], newISO);
+
 
     roundCapture(values);
     values[2] = newISO;
@@ -182,25 +201,75 @@ class _MeterState extends State<Meter> {
 
     int findShutter = fullStopShutter.indexOf(values[0]);
     int findAp = fullStopAperture.indexOf(values[1]);
-    int findISO = fullStopISO.indexOf(values[2]);
+    //int findISO = fullStopISO.indexOf(values[2]);
 
     FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: findShutter);
     FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: findAp);
-    FixedExtentScrollController scrollController3 = FixedExtentScrollController(initialItem: findISO);
-    late FixedExtentScrollController targetController;
+    //FixedExtentScrollController scrollController3 = FixedExtentScrollController(initialItem: findISO);
+    //late FixedExtentScrollController targetController;
 
-    if(priority == 0) {
-      targetController = scrollController1;
-    } else if(priority == 1) {
-      targetController = scrollController2;
+    switch (preference) {
+      case 1:
+        if (findAp > 4) {
+          int difference = findAp - 2;
+          scrollController2 = FixedExtentScrollController(initialItem: findAp - difference);
+          scrollController1 = FixedExtentScrollController(initialItem: findShutter + difference);
+        }
+        break;
+      case 2:
+        if (findAp < 5 || findAp > 7) {
+          int difference = findAp - 6;
+          scrollController2 = FixedExtentScrollController(initialItem: findAp - difference);
+          scrollController1 = FixedExtentScrollController(initialItem: findShutter + difference);
+        }
+        break;
+      case 3:
+        if (findAp < 8) {
+          int difference = findAp - 9;
+          scrollController2 = FixedExtentScrollController(initialItem: findAp - difference);
+          scrollController1 = FixedExtentScrollController(initialItem: findShutter + difference);
+        }
+        break;
+      case 4:
+        if (findShutter < 12) {
+          int difference = findShutter - 14;
+          scrollController1 = FixedExtentScrollController(initialItem: findShutter - difference);
+          scrollController2 = FixedExtentScrollController(initialItem: findAp + difference);
+        }
+        break;
+      case 5:
+        if (findShutter < 8 || findShutter > 11) {
+          int difference = findShutter - 9;
+          scrollController1 = FixedExtentScrollController(initialItem: findShutter - difference);
+          scrollController2 = FixedExtentScrollController(initialItem: findAp + difference);
+        }
+        break;
+      case 6:
+        if (findShutter > 7) {
+          int difference = findShutter - 5;
+          scrollController1 = FixedExtentScrollController(initialItem: findShutter - difference);
+          scrollController2 = FixedExtentScrollController(initialItem: findAp + difference);
+        }
+        break;
+      default:
+        scrollController1 = FixedExtentScrollController(initialItem: findShutter);
+        scrollController2 = FixedExtentScrollController(initialItem: findAp);
+        break;
     }
+    
+
+    // if(priority == 0) {
+    //   targetController = scrollController1;
+    // } else if(priority == 1) {
+    //   targetController = scrollController2;
+    // }
 
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
                 'Meter \n',
@@ -253,7 +322,7 @@ class _MeterState extends State<Meter> {
                         childCount: fullStopShutter.length,
                         builder: (context, index) {
                           return Wheel(
-                            wheel: fullStopShutter[index],
+                            wheel: fullStopShutterScreen[index],
                           );
                         },
                       ),
@@ -293,42 +362,51 @@ class _MeterState extends State<Meter> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 125,
-                    height: 600,
-                    child: ListWheelScrollView.useDelegate(
-                      //onSelectedItemChanged: (value) => print(value),
-                      itemExtent: 60,
-                      perspective: 0.005,
-                      useMagnifier: true,
-                      magnification: 1.5,
-                      diameterRatio: 1.2,
-                      physics: const FixedExtentScrollPhysics(),
-                      controller: scrollController3..addListener(() {
-                        if (!isScrolling) {
-                          isScrolling = true;
-                          final int indexDifference = scrollController3.initialItem - scrollController3.selectedItem;
-                          targetController.animateToItem(
-                            targetController.initialItem - indexDifference,
-                            curve: Curves.easeInOut,
-                            duration: const Duration(milliseconds: 100),
-                          ).whenComplete(() {
-                            isScrolling = false;
-                          });
-                        }
-                      }),
-                      childDelegate: ListWheelChildBuilderDelegate(
-                        childCount: fullStopISO.length,
-                        builder: (context, index) {
-                          return Wheel(
-                            wheel: fullStopISO[index],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: 125,
+                  //   height: 600,
+                  //   child: ListWheelScrollView.useDelegate(
+                  //     //onSelectedItemChanged: (value) => print(value),
+                  //     itemExtent: 60,
+                  //     perspective: 0.005,
+                  //     useMagnifier: true,
+                  //     magnification: 1.5,
+                  //     diameterRatio: 1.2,
+                  //     physics: const FixedExtentScrollPhysics(),
+                  //     controller: scrollController3..addListener(() {
+                  //       if (!isScrolling) {
+                  //         isScrolling = true;
+                  //         final int indexDifference = scrollController3.initialItem - scrollController3.selectedItem;
+                  //         targetController.animateToItem(
+                  //           targetController.initialItem - indexDifference,
+                  //           curve: Curves.easeInOut,
+                  //           duration: const Duration(milliseconds: 100),
+                  //         ).whenComplete(() {
+                  //           isScrolling = false;
+                  //         });
+                  //       }
+                  //     }),
+                  //     childDelegate: ListWheelChildBuilderDelegate(
+                  //       childCount: fullStopISO.length,
+                  //       builder: (context, index) {
+                  //         return Wheel(
+                  //           wheel: fullStopISO[index],
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO)),
+                );
+              },
+              child: Text('Select'),
             ),
             const SizedBox(height: 20),
           ],

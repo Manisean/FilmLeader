@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'list_wheel.dart';
@@ -17,28 +15,23 @@ class ISOPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Meter Page'),
       ),
-      body: Meter(metered: metered),
+      body: ISO(metered: metered),
     );
   }
 }
 
-class Meter extends StatefulWidget {
+class ISO extends StatefulWidget {
   final List<dynamic> metered;
-  const Meter({super.key, required this.metered});
+  const ISO({super.key, required this.metered});
 
   @override
-  State<Meter> createState() => _MeterState();
+  State<ISO> createState() => _ISOState();
 }
 
 
-class _MeterState extends State<Meter> {
+class _ISOState extends State<ISO> {
   var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
-  //Which setting is being prioritized
-  // 0 = setting iso will preserve aperture value
-  // 1 = setting iso will preserve shutter speed value
-  int priority = 1;
-  late int blur;
-  late int focus;
+
 
   @override
   void initState() {
@@ -52,11 +45,11 @@ class _MeterState extends State<Meter> {
     values[2] = values[2].toString();
     values[2] = int.parse(values[2]);
 
-    int findISO = fullStopISO.indexOf(values[2]);
+    //int findISO = fullStopISO.indexOf(values[2]);
 
-    FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: findISO);
+    FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: 0);
 
-    int newISO = fullStopISO[scrollController.initialItem];
+    int newISO = fullStopISO[0];
 
     return Scaffold(
       body: Center(
