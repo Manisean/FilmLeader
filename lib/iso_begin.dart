@@ -249,8 +249,8 @@ class _ISOState extends State<ISO> {
                                   child: const Text("Close"))
                             ],
                             contentPadding: const EdgeInsets.all(20.0),
-                            content: const Text("Not only is knowing what film stock you're using important for chasing a certain look as different films will bring out different colors"
-                                "but it's also useful for getting a good exposure. Some films often look much better when slightly overexposed but more importantly different films will"
+                            content: const Text("Not only is knowing what film stock you're using important for chasing a certain look as different films will bring out different colors "
+                                "but it's also useful for getting a good exposure. Some films often look much better when slightly overexposed but more importantly different films will "
                                 "have different formulas for calculating reciprocity failure.\n\n",
                                 style: TextStyle(fontWeight: FontWeight.w900)),
                           ),

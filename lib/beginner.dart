@@ -148,7 +148,7 @@ class _TargetWidgetState extends State<TargetWidget> {
           content: const Text(
             "Little in Focus: Only the subject will be in focus \nSome in Focus: More items will appear in focus\nLots in Focus: Entire frame will be in focus\n"
             "\n"
-            "Little Blur: No amount of motion blur \nSome Blur: Fast elements will have motion blur\nLots of Blur: Most elements will have motion blur",
+            "Little Blur: Little to no amount of motion blur \nSome Blur: Fast elements will have motion blur\nLots of Blur: Most elements will have motion blur",
             softWrap: true,
             textAlign: TextAlign.left,
             style: TextStyle(

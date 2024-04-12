@@ -376,15 +376,15 @@ class _MeterState extends State<Meter> {
                                 child: const Text("Close"))
                           ],
                           contentPadding: const EdgeInsets.all(20.0),
-                          content: const Text("Shutter speed controls how long the film is exposed to light. The more light that you let in"
+                          content: const Text("Shutter speed controls how long the film is exposed to light. The more light that you let in "
                               "the more exposed an image will be, but this can be offset by adjusting the aperture accordingly.\n\n"
-                              "A side effect of shutter speed is motion blur, the faster the shutter speed is, the more it will \"freeze\" the elements of a"
-                              "photo but the slower it is the more blur will be present. Blur can create many interesting effects such as light"
-                              " trails, smooth textures, or the feeling of motion. It is important to note that longer film is exposed to light"
+                              "A side effect of shutter speed is motion blur, the faster the shutter speed is, the more it will \"freeze\" the elements of a "
+                              "photo but the slower it is the more blur will be present. Blur can create many interesting effects such as light "
+                              "trails, smooth textures, or the feeling of motion. It is important to note that longer film is exposed to light "
                               "the less sensitive it will become and reciprocity failure will set it.\n\n"
-                              "What this means for a film photographer is that with longer exposers,"
+                              "What this means for a film photographer is that with longer exposers, "
                               "usually greater than 1 second, the film will lose sensitivity so additional time must be added to the exposure to make sure an image is properly exposed.\n\n"
-                              "1/60th of a second is often considered to be the slowest shutter speed to use while still hand holding a camera"
+                              "1/60th of a second is often considered to be the slowest shutter speed to use while still hand holding a camera "
                               "as to not accidentally induce blur from unstable hands.",
                               style: TextStyle(fontWeight: FontWeight.w900)),
                         ),
@@ -410,7 +410,7 @@ class _MeterState extends State<Meter> {
                               "aperture number will result in the aperture blades of the lens widening and allowing more light to enter at once "
                               "and expose the film greater than if the blades were narrowed. The exposure can be offset by the shutter speed.\n\n"
                               "A side effect of aperture is that wider apertures (smaller number) will only allow your subject, or part of it, to be sharp "
-                              "and in focus while everything else is out of focus. The more narrow and aperture (larger number) the more of the image"
+                              "and in focus while everything else is out of focus. The more narrow and aperture (larger number) the more of the image "
                               "will appear in focus. It's often common for portraits to use use wide apertures to isolate a subject while landscape "
                               "photography will lean towards narrow apertures to get the entire frame in focus to see all the details of the land.",
                               style: TextStyle(fontWeight: FontWeight.w900)),
