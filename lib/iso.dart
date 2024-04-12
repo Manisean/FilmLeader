@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-
 import 'list_wheel.dart';
 import 'metering.dart';
 
@@ -9,25 +6,21 @@ import 'metering.dart';
 
 class ISOPage extends StatelessWidget {
   final List<dynamic> metered;
-  final int selectedFocusGroup1;
 
-  const ISOPage({Key? key, required this.metered, required this.selectedFocusGroup1}) : super(key: key);
+  const ISOPage({Key? key, required this.metered}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Meter Page'),
-      ),
-      body: ISO(metered: metered, selectedFocusGroup1: selectedFocusGroup1),
+      appBar: AppBar(),
+      body: ISO(metered: metered),
     );
   }
 }
 
 class ISO extends StatefulWidget {
   final List<dynamic> metered;
-  final int selectedFocusGroup1;
-  const ISO({super.key, required this.metered, required this.selectedFocusGroup1});
+  const ISO({super.key, required this.metered});
 
   @override
   State<ISO> createState() => _ISOState();
@@ -35,7 +28,7 @@ class ISO extends StatefulWidget {
 
 
 class _ISOState extends State<ISO> {
-  var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
+  var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200];
   List<dynamic> filmList = ["Kodak Ektar", "Kodak Pro", "Kodak Chrome",
     "Fomapan", "Lomography", "Flic Chrome", "Flic Ektar",
     "Rollei RPX", "Kentmere"];
@@ -69,8 +62,6 @@ class _ISOState extends State<ISO> {
         return ["Fujifilm Superia", "Fujifilm Natura"];
       case 3200:
         return ["Kodak Pro T-Max", "Ilford Delta"];
-      case 6400:
-        return [""];
       default:
         return [""];
     }
@@ -112,22 +103,11 @@ class _ISOState extends State<ISO> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              // Add horizontal padding
-              child: Text(
-                // Shutter data is x/y = d, do the math for a decimal (d)
-                // 1/d = f, the denominator for the fractions (f) of a second
-                // display 1/f for traditional shutter speed format
-                'S      F/      ISO\n$values\n',
-                textAlign: TextAlign.center,
-              ),
-            ),
             Expanded(
             child: Row(
               children: <Widget>[
                 SizedBox(
-                  width: 100,
+                  width: 120,
                   height: 600,
                   child: ListWheelScrollView.useDelegate(
                     itemExtent: 60,
@@ -178,11 +158,12 @@ class _ISOState extends State<ISO> {
               ],
             ),
             ),
+            const SizedBox(height: 80),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection, selectedFocusGroup1: widget.selectedFocusGroup1,)),
+                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection)),
                 );
               },
               child: Text('Submit ISO'),

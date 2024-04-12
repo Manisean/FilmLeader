@@ -1,7 +1,6 @@
+import 'package:filmhelper/beginner.dart';
 import 'package:filmhelper/camera.dart';
 import 'package:flutter/material.dart';
-import 'pages.dart'; // Import the pages file
-//import 'package:manual_camera_pro/camera.dart';
 import 'package:camera/camera.dart';
 import 'settings.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             theme: themeNotifier.getTheme(), // Set the theme based on ThemeNotifier
             darkTheme: ThemeData.dark(), // Use built-in dark theme
-            home: MyHomePage(title: 'Welcome to Light Meter!'),
+            home: const MyHomePage(title: 'Film Leader'),
             debugShowCheckedModeBanner: false,
             routes: {
               '/settings': (context) => SettingsPage(),
@@ -111,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(
                 context,
@@ -130,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
               child: Text(
-                'Welcome to the Light Meter App. \n',
+                'Welcome to Film Leader. \n',
                 textAlign: TextAlign.center, // Center align the text
                 style: TextStyle(
                   fontSize: 24, // Adjust the font size to make it look like a header
@@ -141,13 +140,14 @@ class _MyHomePageState extends State<MyHomePage> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
               child: Text(
-                'Here you will select whether you are a beginner photographer and may need help figuring out what light settings you want, or you may be an expert looking for a little helping hand. \n'
-                    'If you are a beginner, you will be provided with questions to help figure out the best settings for you. If you are an expert, you will be taken directly to the camera portion of this app.\n'
-                    'This can be changed at any time by returning to this menu.\n',
+                'Beginners will be asked the most preferred outcome of their photo and the app will adjust it\'s recommended exposure to satisfy.\n'
+                'Experts will jump straight to the light metering process with the assumption they are familiar with all elements relating to exposure control.\n'
+                'This can be changed at any time by returning to this menu.\n'
+                '\n\nNote - The app will always prioritize a balanced exposure over a user\'s preference and it is not suited for low light scenarios due to technical limitations.\n',
                 textAlign: TextAlign.center, // Center align the text
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -158,17 +158,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       MaterialPageRoute(builder: (context) => BeginnerPage()),
                     );
                   },
-                  child: Text('Beginner'),
+                  child: const Text('Beginner'),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CameraPage(selectedFocusGroup1: 0,)),
+                      MaterialPageRoute(builder: (context) => const CameraPage()),
                     );
                   },
-                  child: Text('Expert'),
+                  child: const Text('Expert'),
                 ),
               ],
             ),

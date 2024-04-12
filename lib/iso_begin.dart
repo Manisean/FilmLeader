@@ -1,27 +1,21 @@
-import 'dart:math';
-
 import 'package:filmhelper/meterin_begin.dart';
-import 'package:filmhelper/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
 import 'list_wheel.dart';
-import 'metering.dart';
-
 
 
 class ISOBeginPage extends StatelessWidget {
   final List<dynamic> metered;
   final int selectedGroup;
-  const ISOBeginPage({super.key, required this.metered, required this.selectedGroup});
+
+  const ISOBeginPage(
+      {super.key, required this.metered, required this.selectedGroup});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Meter Page'),
-      ),
+      appBar: AppBar(),
       body: ISO(metered: metered, selectedGroup: selectedGroup),
     );
   }
@@ -30,18 +24,26 @@ class ISOBeginPage extends StatelessWidget {
 class ISO extends StatefulWidget {
   final List<dynamic> metered;
   final int selectedGroup;
+
   const ISO({super.key, required this.metered, required this.selectedGroup});
 
   @override
   State<ISO> createState() => _ISOState();
 }
 
-
 class _ISOState extends State<ISO> {
-  var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200, 6400];
-  List<dynamic> filmList = ["Kodak Ektar", "Kodak Pro", "Kodak Chrome",
-    "Fomapan", "Lomography", "Flic Chrome", "Flic Ektar",
-    "Rollei RPX", "Kentmere"];
+  var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200];
+  List<dynamic> filmList = [
+    "Kodak Ektar",
+    "Kodak Pro",
+    "Kodak Chrome",
+    "Fomapan",
+    "Lomography",
+    "Flic Chrome",
+    "Flic Ektar",
+    "Rollei RPX",
+    "Kentmere"
+  ];
   late int newISO = 100;
 
   @override
@@ -54,26 +56,60 @@ class _ISOState extends State<ISO> {
       case 25:
         return ["Rollei RPX", "Rollei Ortho", "Rollei Ortho+", "Kodak Ektar"];
       case 50:
-        return ["Ilford Paf F+", "CineStill", "Ferrania Orto", "Fujifulm Fujichrome"];
+        return [
+          "Ilford Paf F+",
+          "CineStill",
+          "Ferrania Orto",
+          "Fujifulm Fujichrome"
+        ];
       case 100:
-        return ["Kodak Ektar", "Kodak Pro", "Kodak Chrome",
-          "Fomapan", "Lomography", "Flic Chrome", "Flic Ektar",
-          "Rollei RPX", "Kentmere"];
+        return [
+          "Kodak Ektar",
+          "Kodak Pro",
+          "Kodak Chrome",
+          "Fomapan",
+          "Lomography",
+          "Flic Chrome",
+          "Flic Ektar",
+          "Rollei RPX",
+          "Kentmere"
+        ];
       case 200:
-        return ["Kodak Gold", "Kodak Color+", "Fujifilm Fujicolor", "Arista Edu Ultra",
-          "Harman Phoenix", "Foma Fomapan", "Rollei Superpan"];
+        return [
+          "Kodak Gold",
+          "Kodak Color+",
+          "Fujifilm Fujicolor",
+          "Arista Edu Ultra",
+          "Harman Phoenix",
+          "Foma Fomapan",
+          "Rollei Superpan"
+        ];
       case 400:
-        return ["Kodak UltraMax", "Fujifilm Superia X-TRA", "Kodak Tri-X", "LomoChrome Purple",
-          "Lomography", "Lomography Berlin", "Revolog Kolor", "Rollei RPX"];
+        return [
+          "Kodak UltraMax",
+          "Fujifilm Superia X-TRA",
+          "Kodak Tri-X",
+          "LomoChrome Purple",
+          "Lomography",
+          "Lomography Berlin",
+          "Revolog Kolor",
+          "Rollei RPX"
+        ];
       case 800:
-        return ["Kodak Portra", "Kodak Max", "Kodak Max Versa+", "Dubblefilm Cinema",
-          "Lomography", "VIBE Max", "Flic Film Aurora", "CineStill"];
+        return [
+          "Kodak Portra",
+          "Kodak Max",
+          "Kodak Max Versa+",
+          "Dubblefilm Cinema",
+          "Lomography",
+          "VIBE Max",
+          "Flic Film Aurora",
+          "CineStill"
+        ];
       case 1600:
         return ["Fujifilm Superia", "Fujifilm Natura"];
       case 3200:
         return ["Kodak Pro T-Max", "Ilford Delta"];
-      case 6400:
-        return [""];
       default:
         return [""];
     }
@@ -93,8 +129,10 @@ class _ISOState extends State<ISO> {
 
     int findISO = fullStopISO.indexOf(values[2]);
 
-    FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: findISO);
-    FixedExtentScrollController scrollController2 = FixedExtentScrollController();
+    FixedExtentScrollController scrollController =
+        FixedExtentScrollController(initialItem: findISO);
+    FixedExtentScrollController scrollController2 =
+        FixedExtentScrollController();
 
     String filmSelection = "";
 
@@ -115,22 +153,11 @@ class _ISOState extends State<ISO> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                // Add horizontal padding
-                child: Text(
-                  // Shutter data is x/y = d, do the math for a decimal (d)
-                  // 1/d = f, the denominator for the fractions (f) of a second
-                  // display 1/f for traditional shutter speed format
-                  'S      F/      ISO\n$values\n',
-                  textAlign: TextAlign.center,
-                ),
-              ),
               Expanded(
                 child: Row(
                   children: <Widget>[
                     SizedBox(
-                      width: 100,
+                      width: 120,
                       height: 600,
                       child: ListWheelScrollView.useDelegate(
                         itemExtent: 60,
@@ -139,10 +166,11 @@ class _ISOState extends State<ISO> {
                         magnification: 1.5,
                         diameterRatio: 1.2,
                         physics: const FixedExtentScrollPhysics(),
-                        controller: scrollController..addListener(() {
-                          newISO = fullStopISO[scrollController.selectedItem];
-                          setFilmList(getFilmList(newISO));
-                        }),
+                        controller: scrollController
+                          ..addListener(() {
+                            newISO = fullStopISO[scrollController.selectedItem];
+                            setFilmList(getFilmList(newISO));
+                          }),
                         childDelegate: ListWheelChildBuilderDelegate(
                           childCount: fullStopISO.length,
                           builder: (context, index) {
@@ -164,53 +192,28 @@ class _ISOState extends State<ISO> {
                             useMagnifier: false,
                             diameterRatio: 1.2,
                             physics: const FixedExtentScrollPhysics(),
-                            controller: scrollController2..addListener(() {
-                              filmSelection = filmList[scrollController.selectedItem];
-                            }),
+                            controller: scrollController2
+                              ..addListener(() {
+                                filmSelection =
+                                    filmList[scrollController.selectedItem];
+                              }),
                             childDelegate: ListWheelChildBuilderDelegate(
                                 childCount: filmList.length,
                                 builder: (context, index) {
                                   return Wheel(
                                     wheel: filmList[index],
                                   );
-                                }
-                            ),
-                          )
-                      ),
+                                }),
+                          )),
                     ),
                   ],
                 ),
               ),
               Container(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text("Close")
-                        )
-                      ],
-                      contentPadding: const EdgeInsets.all(20.0),
-                      content: Text("TEMP"),
-                    ),
-                  );
-                },
-                child: Icon(Icons.info),
-                  ),
-              ),
-                    Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 110.0),
-                    child: ElevatedButton(
+                    ElevatedButton(
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -220,26 +223,56 @@ class _ISOState extends State<ISO> {
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: const Text("Close")
-                              )
+                                  child: const Text("Close"))
                             ],
                             contentPadding: const EdgeInsets.all(20.0),
-                            content: Text("TEMP"),
+                            content: const Text("ISO (sometimes ASA) is the light sensitivity of your film. A lower ISO such as 100 will mean the film is less light sensitive,"
+                                " so it's better suited for bright conditions, while a higher ISO like 1600 or 3200 means it's more sensitive and better suited for lower light conditions.\n\n"
+                                "Often times higher sensitivity films will also have more film grain present, this can be taken advantage of for certain aesthetic purposes.",
+                              style: TextStyle(fontWeight: FontWeight.w900)),
                           ),
                         );
                       },
                       child: Icon(Icons.info),
                     ),
+                    const SizedBox(width: 100),
+                    ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text("Close"))
+                            ],
+                            contentPadding: const EdgeInsets.all(20.0),
+                            content: const Text("Not only is knowing what film stock you're using important for chasing a certain look as different films will bring out different colors"
+                                "but it's also useful for getting a good exposure. Some films often look much better when slightly overexposed but more importantly different films will"
+                                "have different formulas for calculating reciprocity failure.\n\n",
+                                style: TextStyle(fontWeight: FontWeight.w900)),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.info),
                     ),
-                    ),
-              ],
+                  ],
+                ),
               ),
-              ),
+              const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MeterBeginPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection, selectedPreference: widget.selectedGroup,)),
+                    MaterialPageRoute(
+                        builder: (context) => MeterBeginPage(
+                              metered: widget.metered,
+                              newISO: newISO,
+                              selectedFilm: filmSelection,
+                              selectedPreference: widget.selectedGroup,
+                            )),
                   );
                 },
                 child: Text('Submit ISO'),

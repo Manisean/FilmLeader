@@ -1,4 +1,3 @@
-import 'package:filmhelper/camera.dart';
 import 'package:filmhelper/camera_begin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 import 'settings.dart';
-
 
 class BeginnerPage extends StatefulWidget {
   @override
@@ -22,65 +20,63 @@ class _BeginnerPageState extends State<BeginnerPage> {
     _selectedFocusGroup1 = PreferencesManager.selectedFocusGroup1;
   }
 
-  void _updatePreferences() {
-    PreferencesManager.setSelectedFocusGroup1(_selectedFocusGroup1);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Beginner Page'),
         actions: <Widget>[
-        Container(
-        width: 60,
-          child: TargetWidget(),
-        ),
-        IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: () async {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SettingsPage()),
-            );
-            if (result != null && result is Map<String, int?>) {
-              setState(() {
-                _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
-              });
-            }
-          },
+          Container(
+            width: 60,
+            child: TargetWidget(),
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+              if (result != null && result is Map<String, int?>) {
+                setState(() {
+                  _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
+                });
+              }
+            },
           ),
         ],
       ),
       body: Center(
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-          const Center(
-            child: Padding(
-            padding: EdgeInsets.only(left: 30.0, right: 30.0),
-              child: Text(
-              'What do you want your photo to look like?\n',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                child: Text(
+                  'What do you want your photo to look like?\n',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
-          ),
-        ),
-          SizedBox(height: 20),
-          Center(
-            child: Column(
-              children: [
+            Center(
+              child: Column(children: [
                 for (int i = 0; i < 6; i++)
                   FocusOption(
                     key: ValueKey<int>(i),
                     index: i,
                     label: [
-                    'Little in Focus', 'Some in Focus', 'Lots in Focus',
-                      'Little Blur', 'Some Blur', 'Lots of Blur'][i],
+                      'Little in Focus',
+                      'Some in Focus',
+                      'Lots in Focus',
+                      'No Blur',
+                      'Some Blur',
+                      'Lots of Blur'
+                    ][i],
                     selected: _selectedFocusGroup1 == i,
                     onSelect: () {
                       setState(() {
@@ -88,18 +84,21 @@ class _BeginnerPageState extends State<BeginnerPage> {
                       });
                     },
                   ),
-              ]
-          ),
-        ),
+              ]),
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: (_selectedFocusGroup1 != -1) ? () {
-                // Both groups have selections, navigate to Camera Page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CameraBeginPage(selectedFocusGroup1: _selectedFocusGroup1)),
-                );
-              }
-                : null,
+              onPressed: (_selectedFocusGroup1 != -1)
+                  ? () {
+                      // Both groups have selections, navigate to Camera Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CameraBeginPage(
+                                selectedFocusGroup1: _selectedFocusGroup1)),
+                      );
+                    }
+                  : null,
               child: Text('Go to Camera Page'),
             ),
           ],
@@ -111,6 +110,7 @@ class _BeginnerPageState extends State<BeginnerPage> {
 
 class TargetWidget extends StatefulWidget {
   const TargetWidget({Key? key}) : super(key: key);
+
   @override
   State createState() => _TargetWidgetState();
 }
@@ -146,9 +146,9 @@ class _TargetWidgetState extends State<TargetWidget> {
           touchThroughAreaCornerRadius: 30,
           barrierColor: Color.fromARGB(26, 47, 45, 47),
           content: const Text(
-            "Little in Focus: Few Items will appear in focus \nSome in Focus: Some Items will appear in focus\nLots in Focus: All items will appear in focus\n"
-                "\n"
-                "Little Blur: Small amount of Blur \nSome Blur: Some items will be blurry\nLots of Blur: Severe blur effect",
+            "Little in Focus: Only the subject will be in focus \nSome in Focus: More items will appear in focus\nLots in Focus: Entire frame will be in focus\n"
+            "\n"
+            "Little Blur: No amount of motion blur \nSome Blur: Fast elements will have motion blur\nLots of Blur: Most elements will have motion blur",
             softWrap: true,
             textAlign: TextAlign.left,
             style: TextStyle(
@@ -162,7 +162,7 @@ class _TargetWidgetState extends State<TargetWidget> {
               shape: BoxShape.circle,
               color: Colors.black87,
             ),
-            child: Icon(
+            child: const Icon(
               Icons.info,
               color: Colors.white,
             ),
@@ -197,9 +197,7 @@ class FocusOption extends StatelessWidget {
     return ElevatedButton(
       onPressed: onSelect,
       style: ElevatedButton.styleFrom(
-        backgroundColor: selected ? Theme
-            .of(context)
-            .primaryColor : null,
+        backgroundColor: selected ? Theme.of(context).primaryColor : null,
         elevation: selected ? 4 : 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -218,7 +216,6 @@ class FocusOption extends StatelessWidget {
     );
   }
 }
-
 
 class PreferencesManager {
   static SharedPreferences? _prefs;
@@ -241,17 +238,3 @@ class PreferencesManager {
     await _prefs?.setInt('selectedFocusGroup2', value);
   }
 }
-
-// class CameraPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Camera Page'),
-//       ),
-//       body: Center(
-//         child: Text('This is the Camera Page'),
-//       ),
-//     );
-//   }
-// }

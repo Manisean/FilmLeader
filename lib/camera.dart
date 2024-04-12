@@ -11,16 +11,14 @@ import 'iso.dart';
 import 'settings.dart';
 
 class CameraPage extends StatelessWidget {
-  final int selectedFocusGroup1;
 
-  const CameraPage({Key? key, required this.selectedFocusGroup1}) : super(key: key);
+  const CameraPage({Key? key}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Camera Page'),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
@@ -33,26 +31,25 @@ class CameraPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Camera(selectedFocusGroup1: selectedFocusGroup1),
+      body: Camera(),
     );
   }
 }
 
 class Camera extends StatefulWidget {
-  final int selectedFocusGroup1;
 
-  const Camera({Key? key, required this.selectedFocusGroup1}) : super(key: key);
+
+  const Camera({Key? key}) : super(key: key);
 
 
   @override
-  State<Camera> createState() => _CameraState(selectedFocusGroup1: selectedFocusGroup1);
+  State<Camera> createState() => _CameraState();
 }
 
 class _CameraState extends State<Camera> {
   late CameraController _controller;
-  final int selectedFocusGroup1;
 
-  _CameraState({required this.selectedFocusGroup1});
+  _CameraState();
   List<File> allFileList = [];
 
   bool _isCameraPermissionGranted = false;
@@ -78,10 +75,10 @@ class _CameraState extends State<Camera> {
       if (e is CameraException) {
         switch (e.code) {
           case 'CameraAccessDenied':
-            print("camera does not have access");
+            //print("camera does not have access");
             break;
           default:
-            print(e.description);
+            //print(e.description);
             break;
         }
       }
@@ -132,8 +129,8 @@ class _CameraState extends State<Camera> {
     try {
       XFile file = await cameraController.takePicture();
       return file;
-    } on CameraException catch (e) {
-      print('Error occurred while taking picture: $e');
+    } on CameraException {
+      //print('Error occurred while taking picture: $e');
       return null;
     }
   }
@@ -178,7 +175,7 @@ class _CameraState extends State<Camera> {
 
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ISOPage(metered: metered, selectedFocusGroup1: selectedFocusGroup1)),
+                                MaterialPageRoute(builder: (context) => ISOPage(metered: metered)),
                               );
                             },
                           ),
@@ -229,7 +226,7 @@ class _CameraState extends State<Camera> {
     final data = await readExifFromBytes(fileBytes);
 
     if (data.isEmpty) {
-      print("No EXIF information found");
+      //print("No EXIF information found");
       return;
     }
 
@@ -237,18 +234,18 @@ class _CameraState extends State<Camera> {
 
     data.forEach((key, value) {
       if (key == "EXIF ExposureTime") {
-        print((key,value));
+        //print((key,value));
         values.add(value);
       } else if (key == "EXIF FNumber") {
-        print((key,value));
+        //print((key,value));
         values.add(value);
       } else if (key == "EXIF ISOSpeedRatings") {
-        print((key,value));
+        //print((key,value));
         values.add(value);
       }
 
     });
-    print('----------------------------------');
+    //print('----------------------------------');
     return values;
   }
 

@@ -7,20 +7,17 @@ import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:exif/exif.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import 'iso.dart';
-import 'metering.dart';
 import 'settings.dart';
 
 class CameraBeginPage extends StatelessWidget {
   final int selectedFocusGroup1;
+
   const CameraBeginPage({super.key, required this.selectedFocusGroup1});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Camera Page'),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
@@ -33,20 +30,21 @@ class CameraBeginPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Camera(selectedFocusGroup1: selectedFocusGroup1,),
+      body: Camera(
+        selectedFocusGroup1: selectedFocusGroup1,
+      ),
     );
   }
 }
 
-
 class Camera extends StatefulWidget {
   final int selectedFocusGroup1;
+
   const Camera({super.key, required this.selectedFocusGroup1});
 
   @override
   State<Camera> createState() => _CameraState();
 }
-
 
 class _CameraState extends State<Camera> {
   late CameraController _controller;
@@ -70,7 +68,8 @@ class _CameraState extends State<Camera> {
     _controller.initialize().then((_) {
       if (!mounted) {
         return;
-      }setState(() {});
+      }
+      setState(() {});
     }).catchError((Object e) {
       if (e is CameraException) {
         switch (e.code) {
@@ -101,8 +100,6 @@ class _CameraState extends State<Camera> {
     }
   }
 
-
-
   refreshAlreadyCapturedImages() async {
     final directory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> fileList = await directory.list().toList();
@@ -118,7 +115,6 @@ class _CameraState extends State<Camera> {
       }
     });
   }
-
 
   Future<XFile?> takePicture() async {
     final CameraController cameraController = _controller;
@@ -139,85 +135,85 @@ class _CameraState extends State<Camera> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isCameraPermissionGranted
-          ? Stack(
-          children: [
-            SizedBox(
-              height: double.infinity,
-              child: Stack(
-                  children: [
-                    CameraPreview(_controller),
-                    SingleChildScrollView(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    _controller.setFlashMode(FlashMode.off);
-                                    XFile? rawImage = await takePicture();
-                                    File imageFile = File(rawImage!.path);
+          ? Stack(children: [
+              SizedBox(
+                height: double.infinity,
+                child: Stack(children: [
+                  CameraPreview(_controller),
+                  SingleChildScrollView(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  _controller.setFlashMode(FlashMode.off);
+                                  XFile? rawImage = await takePicture();
+                                  File imageFile = File(rawImage!.path);
 
-                                    int currentUnix = DateTime.now().millisecondsSinceEpoch;
+                                  int currentUnix =
+                                      DateTime.now().millisecondsSinceEpoch;
 
-                                    final directory = await getApplicationDocumentsDirectory();
+                                  final directory =
+                                      await getApplicationDocumentsDirectory();
 
-                                    String fileFormat = imageFile.path.split('.').last;
+                                  String fileFormat =
+                                      imageFile.path.split('.').last;
 
-                                    await imageFile.copy(
-                                      '${directory.path}/$currentUnix.$fileFormat',
-                                    );
+                                  await imageFile.copy(
+                                    '${directory.path}/$currentUnix.$fileFormat',
+                                  );
 
-                                    refreshAlreadyCapturedImages();
+                                  refreshAlreadyCapturedImages();
 
-                                    final metered = await printPicInfo('${directory.path}/$currentUnix.$fileFormat');
+                                  final metered = await printPicInfo(
+                                      '${directory.path}/$currentUnix.$fileFormat');
 
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ISOBeginPage(metered: metered, selectedGroup: widget.selectedFocusGroup1)),
-                                    );
-                                  },
-                                ),
-                              ],
-                            )
-                          ]
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ISOBeginPage(metered: metered, selectedGroup: widget.selectedFocusGroup1)),
+                                  );
+                                },
+                              ),
+                            ],
+                          )
+                        ]),
+                  ),
+                ]),
+              )
+            ])
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(),
+                const Text(
+                  'Permission denied',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    getPermissionStatus();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Give permission',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
                       ),
                     ),
-                  ]
-              ),
-            )
-          ]
-      )
-          : Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(),
-          const Text(
-            'Permission denied',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              getPermissionStatus();
-            },
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Give permission',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+                  ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -234,16 +230,15 @@ class _CameraState extends State<Camera> {
 
     data.forEach((key, value) {
       if (key == "EXIF ExposureTime") {
-        print((key,value));
+        print((key, value));
         values.add(value);
       } else if (key == "EXIF FNumber") {
-        print((key,value));
+        print((key, value));
         values.add(value);
       } else if (key == "EXIF ISOSpeedRatings") {
-        print((key,value));
+        print((key, value));
         values.add(value);
       }
-
     });
     print('----------------------------------');
     return values;
