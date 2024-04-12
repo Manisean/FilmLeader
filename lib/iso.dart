@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:filmhelper/settings.dart';
 import 'package:flutter/material.dart';
 
 import 'list_wheel.dart';
@@ -179,7 +180,7 @@ class _ISOState extends State<ISO> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection)),
+                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection, selectedPreference: selectedPreferenceCalculation,)),
                 );
               },
               child: Text('Submit ISO'),
