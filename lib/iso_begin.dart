@@ -13,7 +13,8 @@ import 'metering.dart';
 
 class ISOBeginPage extends StatelessWidget {
   final List<dynamic> metered;
-  const ISOBeginPage({super.key, required this.metered});
+  final int selectedGroup;
+  const ISOBeginPage({super.key, required this.metered, required this.selectedGroup});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +22,15 @@ class ISOBeginPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Meter Page'),
       ),
-      body: ISO(metered: metered),
+      body: ISO(metered: metered, selectedGroup: selectedGroup),
     );
   }
 }
 
 class ISO extends StatefulWidget {
   final List<dynamic> metered;
-  const ISO({super.key, required this.metered});
+  final int selectedGroup;
+  const ISO({super.key, required this.metered, required this.selectedGroup});
 
   @override
   State<ISO> createState() => _ISOState();
@@ -237,7 +239,7 @@ class _ISOState extends State<ISO> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MeterBeginPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection, selectedPreference: selectedPreferenceCalculation,)),
+                    MaterialPageRoute(builder: (context) => MeterBeginPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection, selectedPreference: widget.selectedGroup,)),
                   );
                 },
                 child: Text('Submit ISO'),
