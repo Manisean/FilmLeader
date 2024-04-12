@@ -29,7 +29,7 @@ class MeterBeginPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Meter(metered: metered, newISO: newISO, selectedFilm: selectedFilm,),
+      body: Meter(metered: metered, newISO: newISO, selectedFilm: selectedFilm, selectedPreference: selectedPreference, ),
     );
   }
 }
@@ -38,7 +38,8 @@ class Meter extends StatefulWidget {
   final List<dynamic> metered;
   final int newISO;
   final String selectedFilm;
-  const Meter({super.key, required this.metered, required this.newISO, required this.selectedFilm});
+  final int selectedPreference;
+  const Meter({super.key, required this.metered, required this.newISO, required this.selectedFilm, required this.selectedPreference});
 
   @override
   State<Meter> createState() => _MeterState();
@@ -55,7 +56,7 @@ class _MeterState extends State<Meter> {
   // 0 = setting iso will preserve aperture value
   // 1 = setting iso will preserve shutter speed value
   late int priority;
-  int preference = selectedPreferenceCalculation;
+  late int preference;
 
   num recFailure(num shutter) {
     if (shutter > 1) {
@@ -203,6 +204,7 @@ class _MeterState extends State<Meter> {
 
     // TEMP VALUE FOR TESTING
     //values[1] = 32.0;
+    preference = widget.selectedPreference;
     priority = prioritySet(preference);
     values[priority] = adjustValueFullStop(values, values[2], newISO);
 

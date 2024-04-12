@@ -13,7 +13,8 @@ import 'metering.dart';
 import 'settings.dart';
 
 class CameraBeginPage extends StatelessWidget {
-  const CameraBeginPage({super.key});
+  final int selectedFocusGroup1;
+  const CameraBeginPage({super.key, required this.selectedFocusGroup1});
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +33,20 @@ class CameraBeginPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Camera(),
+      body: Camera(selectedFocusGroup1: selectedFocusGroup1,),
     );
   }
 }
 
+
 class Camera extends StatefulWidget {
-  const Camera({super.key});
+  final int selectedFocusGroup1;
+  const Camera({super.key, required this.selectedFocusGroup1});
 
   @override
   State<Camera> createState() => _CameraState();
 }
+
 
 class _CameraState extends State<Camera> {
   late CameraController _controller;
@@ -171,7 +175,7 @@ class _CameraState extends State<Camera> {
 
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => ISOBeginPage(metered: metered)),
+                                      MaterialPageRoute(builder: (context) => ISOBeginPage(metered: metered, selectedGroup: widget.selectedFocusGroup1)),
                                     );
                                   },
                                 ),
