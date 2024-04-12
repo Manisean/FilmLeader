@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 
 int selectedFocusGroup1 = -1;
-int selectedFocusGroup2 = -1;
+int selectedPreferenceCalculation = -1;
 
 
 
@@ -77,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 20),
-                  Text(
+                  const Text(
                     'Dark Mode  ',
                     style: TextStyle(
                       fontSize: 20,

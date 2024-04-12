@@ -9,7 +9,8 @@ class MeterPage extends StatelessWidget {
   final List<dynamic> metered;
   final int newISO;
   final String selectedFilm;
-  const MeterPage({super.key, required this.metered, required this.newISO, required this.selectedFilm});
+  final int selectedPreference;
+  const MeterPage({super.key, required this.metered, required this.newISO, required this.selectedFilm, required this.selectedPreference, });
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class _MeterState extends State<Meter> {
   // 0 = setting iso will preserve aperture value
   // 1 = setting iso will preserve shutter speed value
   late int priority;
-  int preference = 6;
+  int preference = selectedPreferenceCalculation;
 
   num recFailure(num shutter) {
     if (shutter > 1) {
