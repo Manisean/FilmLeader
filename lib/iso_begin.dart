@@ -44,13 +44,16 @@ class _ISOState extends State<ISO> {
   List<String> getFilmList(int isoValue) {
     switch (isoValue) {
       case 25:
-        return ["Rollei RPX", "Rollei Ortho", "Rollei Ortho+", "Kodak Ektar"];
+        return ["Rollei RPX",
+                "Rollei Ortho",
+                "Rollei Ortho+",
+                "Kodak Ektar"];
       case 50:
         return [
           "Ilford Paf F+",
           "CineStill",
           "Ferrania Orto",
-          "Fujifulm Fujichrome"
+          "Fujifilm Chrome"
         ];
       case 100:
         return [
@@ -77,9 +80,9 @@ class _ISOState extends State<ISO> {
       case 400:
         return [
           "Kodak UltraMax",
-          "Fujifilm Superia X-TRA",
+          "Fujifilm Superia",
           "Kodak Tri-X",
-          "LomoChrome Purple",
+          "LomoChrome",
           "Lomography",
           "Lomography Berlin",
           "Revolog Kolor",
