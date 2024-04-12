@@ -1,4 +1,5 @@
 import 'package:filmhelper/camera.dart';
+import 'package:filmhelper/camera_begin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -95,7 +96,7 @@ class _BeginnerPageState extends State<BeginnerPage> {
                 // Both groups have selections, navigate to Camera Page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CameraPage(selectedFocusGroup1: _selectedFocusGroup1)),
+                  MaterialPageRoute(builder: (context) => CameraBeginPage(selectedFocusGroup1: _selectedFocusGroup1)),
                 );
               }
                 : null,
