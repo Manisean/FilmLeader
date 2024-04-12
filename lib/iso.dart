@@ -42,22 +42,61 @@ class _ISOState extends State<ISO> {
   List<String> getFilmList(int isoValue) {
     switch (isoValue) {
       case 25:
-        return ["Rollei RPX", "Rollei Ortho", "Rollei Ortho+", "Kodak Ektar"];
+        return ["Rollei RPX",
+          "Rollei Ortho",
+          "Rollei Ortho+",
+          "Kodak Ektar"];
       case 50:
-        return ["Ilford Paf F+", "CineStill", "Ferrania Orto", "Fujifulm Fujichrome"];
+        return [
+          "Ilford Paf F+",
+          "CineStill",
+          "Ferrania Orto",
+          "Fujifilm Chrome"
+        ];
       case 100:
-        return ["Kodak Ektar", "Kodak Pro", "Kodak Chrome",
-          "Fomapan", "Lomography", "Flic Chrome", "Flic Ektar",
-          "Rollei RPX", "Kentmere"];
+        return [
+          "Kodak Ektar",
+          "Kodak Pro",
+          "Kodak Chrome",
+          "Fomapan",
+          "Lomography",
+          "Flic Chrome",
+          "Flic Ektar",
+          "Rollei RPX",
+          "Kentmere"
+        ];
       case 200:
-        return ["Kodak Gold", "Kodak Color+", "Fujifilm Fujicolor", "Arista Edu Ultra",
-        "Harman Phoenix", "Foma Fomapan", "Rollei Superpan"];
+        return [
+          "Kodak Gold",
+          "Kodak Color+",
+          "Fujifilm Fujicolor",
+          "Arista Edu Ultra",
+          "Harman Phoenix",
+          "Foma Fomapan",
+          "Rollei Superpan"
+        ];
       case 400:
-        return ["Kodak UltraMax", "Fujifilm Superia X-TRA", "Kodak Tri-X", "LomoChrome Purple",
-        "Lomography", "Lomography Berlin", "Revolog Kolor", "Rollei RPX"];
+        return [
+          "Kodak UltraMax",
+          "Fujifilm Superia",
+          "Kodak Tri-X",
+          "LomoChrome",
+          "Lomography",
+          "Lomography Berlin",
+          "Revolog Kolor",
+          "Rollei RPX"
+        ];
       case 800:
-        return ["Kodak Portra", "Kodak Max", "Kodak Max Versa+", "Dubblefilm Cinema",
-          "Lomography", "VIBE Max", "Flic Film Aurora", "CineStill"];
+        return [
+          "Kodak Portra",
+          "Kodak Max",
+          "Kodak Max Versa+",
+          "Dubblefilm Cinema",
+          "Lomography",
+          "VIBE Max",
+          "Flic Film Aurora",
+          "CineStill"
+        ];
       case 1600:
         return ["Fujifilm Superia", "Fujifilm Natura"];
       case 3200:
