@@ -2,6 +2,7 @@ import 'package:filmhelper/beginner.dart';
 import 'package:filmhelper/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
 import 'settings.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,9 @@ import 'package:provider/provider.dart';
 late List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   cameras = await availableCameras();
   runApp(
     ChangeNotifierProvider<ThemeNotifier>(
