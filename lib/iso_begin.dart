@@ -9,8 +9,7 @@ class ISOBeginPage extends StatelessWidget {
   final List<dynamic> metered;
   final int selectedGroup;
 
-  const ISOBeginPage(
-      {super.key, required this.metered, required this.selectedGroup});
+  const ISOBeginPage({Key? key, required this.metered, required this.selectedGroup})  : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,30 +20,21 @@ class ISOBeginPage extends StatelessWidget {
   }
 }
 
+
 class ISO extends StatefulWidget {
   final List<dynamic> metered;
   final int selectedGroup;
-
   const ISO({super.key, required this.metered, required this.selectedGroup});
 
   @override
   State<ISO> createState() => _ISOState();
 }
 
+
 class _ISOState extends State<ISO> {
   var fullStopISO = [25, 50, 100, 200, 400, 800, 1600, 3200];
-  List<dynamic> filmList = [
-    "Kodak Ektar",
-    "Kodak Pro",
-    "Kodak Chrome",
-    "Fomapan",
-    "Lomography",
-    "Flic Chrome",
-    "Flic Ektar",
-    "Rollei RPX",
-    "Kentmere"
-  ];
-  late int newISO = 100;
+  List<dynamic> filmList = ["Rollei RPX", "Rollei Ortho", "Rollei Ortho+", "Kodak Ektar"];
+  int newISO = 25;
 
   @override
   void initState() {
@@ -127,12 +117,9 @@ class _ISOState extends State<ISO> {
     values[2] = values[2].toString();
     values[2] = int.parse(values[2]);
 
-    int findISO = fullStopISO.indexOf(values[2]);
 
-    FixedExtentScrollController scrollController =
-        FixedExtentScrollController(initialItem: findISO);
-    FixedExtentScrollController scrollController2 =
-        FixedExtentScrollController();
+    FixedExtentScrollController scrollController = FixedExtentScrollController(initialItem: 0);
+    FixedExtentScrollController scrollController2 = FixedExtentScrollController();
 
     String filmSelection = "";
 

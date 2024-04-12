@@ -276,10 +276,8 @@ class _MeterState extends State<Meter> {
     int findShutter = fullStopShutter.indexOf(values[0]);
     int findAp = fullStopAperture.indexOf(values[1]);
 
-    FixedExtentScrollController scrollController1 =
-        FixedExtentScrollController(initialItem: findShutter);
-    FixedExtentScrollController scrollController2 =
-        FixedExtentScrollController(initialItem: findAp);
+    FixedExtentScrollController scrollController1 = FixedExtentScrollController(initialItem: findShutter);
+    FixedExtentScrollController scrollController2 = FixedExtentScrollController(initialItem: findAp);
 
     return Scaffold(
       body: Center(
