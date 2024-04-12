@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:filmhelper/settings.dart';
 import 'package:flutter/material.dart';
 
 import 'list_wheel.dart';
@@ -10,7 +9,9 @@ import 'metering.dart';
 
 class ISOPage extends StatelessWidget {
   final List<dynamic> metered;
-  const ISOPage({super.key, required this.metered});
+  final int selectedFocusGroup1;
+
+  const ISOPage({Key? key, required this.metered, required this.selectedFocusGroup1}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +19,15 @@ class ISOPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Meter Page'),
       ),
-      body: ISO(metered: metered),
+      body: ISO(metered: metered, selectedFocusGroup1: selectedFocusGroup1),
     );
   }
 }
 
 class ISO extends StatefulWidget {
   final List<dynamic> metered;
-  const ISO({super.key, required this.metered});
+  final int selectedFocusGroup1;
+  const ISO({super.key, required this.metered, required this.selectedFocusGroup1});
 
   @override
   State<ISO> createState() => _ISOState();
@@ -180,7 +182,7 @@ class _ISOState extends State<ISO> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection, selectedPreference: selectedPreferenceCalculation,)),
+                  MaterialPageRoute(builder: (context) => MeterPage(metered: widget.metered, newISO: newISO, selectedFilm: filmSelection, selectedFocusGroup1: widget.selectedFocusGroup1,)),
                 );
               },
               child: Text('Submit ISO'),

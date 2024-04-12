@@ -20,26 +20,31 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeNotifier>(
-      builder: (context, themeNotifier, child) {
-        return MaterialApp(
-          theme: themeNotifier.getTheme(), // Set the theme based on ThemeNotifier
-          darkTheme: ThemeData.dark(), // Use built-in dark theme
-          home: MyHomePage(title: 'Welcome to Light Meter!'),
-          debugShowCheckedModeBanner: false,
-          routes: {
-            '/settings': (context) => SettingsPage(),
-          },
-        );
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ThemeNotifier>(
+          create: (_) => ThemeNotifier(), // Create a provider for managing theme state
+        ),
+      ],
+      child: Consumer<ThemeNotifier>(
+        builder: (context, themeNotifier, child) {
+          return MaterialApp(
+            theme: themeNotifier.getTheme(), // Set the theme based on ThemeNotifier
+            darkTheme: ThemeData.dark(), // Use built-in dark theme
+            home: MyHomePage(title: 'Welcome to Light Meter!'),
+            debugShowCheckedModeBanner: false,
+            routes: {
+              '/settings': (context) => SettingsPage(),
+            },
+          );
+        },
+      ),
     );
   }
 }
+
 
 // Dark Mode Settings
 class ThemeNotifier extends ChangeNotifier {
@@ -160,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CameraPage()),
+                      MaterialPageRoute(builder: (context) => CameraPage(selectedFocusGroup1: 0,)),
                     );
                   },
                   child: Text('Expert'),

@@ -8,11 +8,13 @@ import 'package:exif/exif.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'iso.dart';
-import 'metering.dart';
 import 'settings.dart';
 
 class CameraPage extends StatelessWidget {
-  const CameraPage({super.key});
+  final int selectedFocusGroup1;
+
+  const CameraPage({Key? key, required this.selectedFocusGroup1}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +33,26 @@ class CameraPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Camera(),
+      body: Camera(selectedFocusGroup1: selectedFocusGroup1),
     );
   }
 }
 
 class Camera extends StatefulWidget {
-  const Camera({super.key});
+  final int selectedFocusGroup1;
+
+  const Camera({Key? key, required this.selectedFocusGroup1}) : super(key: key);
+
 
   @override
-  State<Camera> createState() => _CameraState();
+  State<Camera> createState() => _CameraState(selectedFocusGroup1: selectedFocusGroup1);
 }
 
 class _CameraState extends State<Camera> {
   late CameraController _controller;
+  final int selectedFocusGroup1;
 
+  _CameraState({required this.selectedFocusGroup1});
   List<File> allFileList = [];
 
   bool _isCameraPermissionGranted = false;
@@ -171,7 +178,7 @@ class _CameraState extends State<Camera> {
 
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ISOPage(metered: metered)),
+                                MaterialPageRoute(builder: (context) => ISOPage(metered: metered, selectedFocusGroup1: selectedFocusGroup1)),
                               );
                             },
                           ),

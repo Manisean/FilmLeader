@@ -2,6 +2,7 @@ import 'package:filmhelper/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 import 'settings.dart';
 
@@ -12,14 +13,16 @@ class BeginnerPage extends StatefulWidget {
 }
 
 class _BeginnerPageState extends State<BeginnerPage> {
-  late int _selectedFocusGroup1 = -1;
-  late int _selectedPreferenceCalculation = -1;
+  late int _selectedFocusGroup1;
 
   @override
   void initState() {
     super.initState();
-    _selectedFocusGroup1 = selectedFocusGroup1;
-    _selectedPreferenceCalculation = selectedPreferenceCalculation;
+    _selectedFocusGroup1 = PreferencesManager.selectedFocusGroup1;
+  }
+
+  void _updatePreferences() {
+    PreferencesManager.setSelectedFocusGroup1(_selectedFocusGroup1);
   }
 
   @override
@@ -30,7 +33,7 @@ class _BeginnerPageState extends State<BeginnerPage> {
         actions: <Widget>[
         Container(
         width: 60,
-        child: TargetWidget(),
+          child: TargetWidget(),
         ),
         IconButton(
           icon: Icon(Icons.settings),
@@ -39,13 +42,12 @@ class _BeginnerPageState extends State<BeginnerPage> {
               context,
               MaterialPageRoute(builder: (context) => SettingsPage()),
             );
-              if (result != null && result is Map<String, int?>) {
-                setState(() {
-                  _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
-                  _selectedPreferenceCalculation = _selectedFocusGroup1 + 1;
-                });
-              }
-            },
+            if (result != null && result is Map<String, int?>) {
+              setState(() {
+                _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
+              });
+            }
+          },
           ),
         ],
       ),
@@ -67,15 +69,6 @@ class _BeginnerPageState extends State<BeginnerPage> {
             ),
           ),
         ),
-          const Center(
-            child: Text(
-            'FOCUS',
-              style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
           SizedBox(height: 20),
           Center(
             child: Column(
@@ -91,7 +84,6 @@ class _BeginnerPageState extends State<BeginnerPage> {
                     onSelect: () {
                       setState(() {
                         _selectedFocusGroup1 = i;
-                        _selectedPreferenceCalculation = _selectedFocusGroup1 + 1;
                       });
                     },
                   ),
@@ -99,11 +91,11 @@ class _BeginnerPageState extends State<BeginnerPage> {
           ),
         ),
             ElevatedButton(
-              onPressed: (_selectedFocusGroup1 != -1 && _selectedPreferenceCalculation != -1) ? () {
+              onPressed: (_selectedFocusGroup1 != -1) ? () {
                 // Both groups have selections, navigate to Camera Page
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CameraPage()),
+                  MaterialPageRoute(builder: (context) => CameraPage(selectedFocusGroup1: _selectedFocusGroup1)),
                 );
               }
                 : null,
@@ -223,6 +215,29 @@ class FocusOption extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+
+class PreferencesManager {
+  static SharedPreferences? _prefs;
+
+  static Future<void> initialize() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  static int get selectedFocusGroup1 =>
+      _prefs?.getInt('selectedFocusGroup1') ?? -1;
+
+  static int get selectedFocusGroup2 =>
+      _prefs?.getInt('selectedFocusGroup2') ?? -1;
+
+  static Future<void> setSelectedFocusGroup1(int value) async {
+    await _prefs?.setInt('selectedFocusGroup1', value);
+  }
+
+  static Future<void> setSelectedFocusGroup2(int value) async {
+    await _prefs?.setInt('selectedFocusGroup2', value);
   }
 }
 
