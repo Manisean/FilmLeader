@@ -9,8 +9,8 @@ class MeterPage extends StatelessWidget {
   final List<dynamic> metered;
   final int newISO;
   final String selectedFilm;
-  final int selectedPreference;
-  const MeterPage({super.key, required this.metered, required this.newISO, required this.selectedFilm, required this.selectedPreference, });
+  final int selectedFocusGroup1;
+  const MeterPage({super.key, required this.metered, required this.newISO, required this.selectedFilm, required this.selectedFocusGroup1});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class MeterPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Meter(metered: metered, newISO: newISO, selectedFilm: selectedFilm,),
+      body: Meter(metered: metered, newISO: newISO, selectedFilm: selectedFilm, selectedFocusGroup1: selectedFocusGroup1,),
     );
   }
 }
@@ -38,7 +38,9 @@ class Meter extends StatefulWidget {
   final List<dynamic> metered;
   final int newISO;
   final String selectedFilm;
-  const Meter({super.key, required this.metered, required this.newISO, required this.selectedFilm});
+  final int selectedFocusGroup1;
+
+  const Meter({super.key, required this.metered, required this.newISO, required this.selectedFilm, required this.selectedFocusGroup1});
 
   @override
   State<Meter> createState() => _MeterState();
@@ -55,7 +57,7 @@ class _MeterState extends State<Meter> {
   // 0 = setting iso will preserve aperture value
   // 1 = setting iso will preserve shutter speed value
   late int priority;
-  int preference = selectedPreferenceCalculation;
+  late int preference;
 
   num recFailure(num shutter) {
     if (shutter > 1) {
@@ -114,6 +116,7 @@ class _MeterState extends State<Meter> {
     int oldISOIndex = fullStopISO.indexOf(oldISO);
     int newISOIndex = fullStopISO.indexOf(newISO);
 
+    print(preference);
     print('INDEX OF OLD ISO: $oldISOIndex');
     print('INDEX OF NEW ISO: $newISOIndex');
 
@@ -171,6 +174,7 @@ class _MeterState extends State<Meter> {
   @override
   void initState() {
     super.initState();
+    preference = widget.selectedFocusGroup1 + 1;
   }
 
 

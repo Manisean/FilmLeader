@@ -4,11 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 
-int selectedFocusGroup1 = -1;
-int selectedPreferenceCalculation = -1;
-
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
