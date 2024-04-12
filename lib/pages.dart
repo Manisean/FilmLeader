@@ -12,13 +12,13 @@ class BeginnerPage extends StatefulWidget {
 
 class _BeginnerPageState extends State<BeginnerPage> {
   late int _selectedFocusGroup1 = -1;
-  late int _selectedFocusGroup2 = -1;
+  late int _selectedPreferenceCalculation = -1;
 
   @override
   void initState() {
     super.initState();
     _selectedFocusGroup1 = selectedFocusGroup1;
-    _selectedFocusGroup2 = selectedFocusGroup2;
+    _selectedPreferenceCalculation = selectedFocusGroup1;
   }
 
   @override
@@ -38,15 +38,14 @@ class _BeginnerPageState extends State<BeginnerPage> {
               context,
               MaterialPageRoute(builder: (context) => SettingsPage()),
             );
-
-            if (result != null && result is Map<String, int?>) {
-              setState(() {
-                _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
-                _selectedFocusGroup2 = result['selectedFocusGroup2'] ?? -1;
-              });
-            }
-          },
-        ),
+              if (result != null && result is Map<String, int?>) {
+                setState(() {
+                  _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
+                  _selectedPreferenceCalculation = _selectedFocusGroup1 + 1;
+                });
+              }
+            },
+          ),
         ],
       ),
       body: Center(
@@ -148,7 +147,6 @@ class _BeginnerPageState extends State<BeginnerPage> {
 
 class TargetWidget extends StatefulWidget {
   const TargetWidget({Key? key}) : super(key: key);
-
   @override
   State createState() => _TargetWidgetState();
 }
@@ -156,20 +154,10 @@ class TargetWidget extends StatefulWidget {
 class _TargetWidgetState extends State<TargetWidget> {
   final _controller = SuperTooltipController();
 
-  Future<bool> _willPopCallback() async {
-    // If the tooltip is open we don't pop the page on a backbutton press
-    // but close the ToolTip
-    if (_controller.isVisible) {
-      await _controller.hideTooltip();
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _willPopCallback,
+    return PopScope(
+      //onWillPop: _willPopCallback,
       child: GestureDetector(
         onTap: () async {
           await _controller.showTooltip();
