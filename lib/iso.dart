@@ -1,3 +1,4 @@
+import 'package:filmhelper/settings.dart';
 import 'package:flutter/material.dart';
 import 'list_wheel.dart';
 import 'metering.dart';
@@ -10,7 +11,19 @@ class ISOPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+          ),
+        ],
+      ),
       body: ISO(metered: metered),
     );
   }
