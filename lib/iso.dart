@@ -85,9 +85,10 @@ class _ISOState extends State<ISO> {
       case 400:
         return [
           "Kodak UltraMax",
-          "Fujifilm Superia X-TRA",
           "Kodak Tri-X",
-          "LomoChrome Purple",
+          "Ilford HP5 PLUS",
+          "Fujifilm Superia",
+          "LomoChrome",
           "Lomography",
           "Lomography Berlin",
           "Revolog Kolor",

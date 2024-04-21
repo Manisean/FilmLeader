@@ -110,9 +110,11 @@ class _MeterState extends State<Meter> {
   // Method to calculate new value for shutter speed or aperture based on selected ISO
   double adjustValueFullStop(List<dynamic> values, int oldISO, int newISO) {
     // Calculate new value based on the inverse square law
-
+    print("imported ISO adjust function: $newISO");
     int oldISOIndex = fullStopISO.indexOf(oldISO);
     int newISOIndex = fullStopISO.indexOf(newISO);
+    double modISO = newISO.toDouble();
+
 
     //print('INDEX OF OLD ISO: $oldISOIndex');
     //print('INDEX OF NEW ISO: $newISOIndex');
@@ -123,21 +125,25 @@ class _MeterState extends State<Meter> {
 
     if(priority == 0) { //shutter
       int posIndex = diffIndex.abs();
-      newISO = oldISO;
+      modISO = oldISO.toDouble();
+
+      // This if must be done because direct stop conversion of value*sqrt(oldISO/newISO)
+      // is not possible so the ISO must adjusted in a different way to make shutter
+      // values accurate.
 
       if (diffIndex < 0) {
         for (int i = 0; i < posIndex; i++) {
-          newISO *= 4;
-          //print('CONVERTED ISO GREATER: $newISO');
+          modISO *= 4;
+          //print('CONVERTED ISO GREATER: $modISO');
         }
       } else {
         for (int i = 0; i < posIndex; i++) {
-          newISO ~/= 4;
-          //print('CONVERTED ISO LESSER: $newISO');
+          modISO /= 4;
+          //print('CONVERTED ISO LESSER: $modISO');
         }
       }
 
-      double newValue = values[priority] * sqrt(oldISO / newISO);
+      double newValue = values[priority] * sqrt(oldISO / modISO);
       //print('NEW VALUE $newValue');
       if (newValue > fullStopShutter.first) {
         int adjuster = fullStopShutter.indexOf(values[priority]) + diffIndex;
@@ -147,12 +153,10 @@ class _MeterState extends State<Meter> {
         int adjuster = (fullStopShutter.indexOf(fullStopShutter.last) - fullStopShutter.indexOf(values[priority])) + diffIndex;
         //print('INDEX OF OVERFLOW: $adjuster');
         values[1] = fullStopAperture[fullStopAperture.indexOf(values[1]) - adjuster];
-      } else {
-
       }
-      return values[priority] * sqrt(oldISO / newISO);
+      return values[priority] * sqrt(oldISO / modISO);
     } else { //aperture
-      double newValue = values[priority] * sqrt(newISO / oldISO);
+      double newValue = values[priority] * sqrt(modISO / oldISO);
       if (newValue < fullStopAperture.first) {
         int adjuster = fullStopAperture.indexOf(values[priority]) - diffIndex;
         //print('INDEX OF OVERFLOW: $adjuster');
@@ -162,7 +166,7 @@ class _MeterState extends State<Meter> {
         //print('INDEX OF OVERFLOW: $adjuster');
         values[0] = fullStopShutter[fullStopShutter.indexOf(values[0]) - adjuster];
       }
-      return values[priority] * sqrt(newISO / oldISO);
+      return values[priority] * sqrt(modISO / oldISO);
     }
 
   }
@@ -176,7 +180,8 @@ class _MeterState extends State<Meter> {
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> values = widget.metered;
+    List<dynamic> valuesOriginal = widget.metered;
+    List<dynamic> values = valuesOriginal;
     String alertMsg = "";
 
     //print('Values array: $values');
@@ -199,10 +204,9 @@ class _MeterState extends State<Meter> {
 
     //newISO is the iso speed the user selects (when that page is implemented
     int newISO = widget.newISO;
-    //print('imported ISO: ' + widget.newISO.toString());
+    print('imported ISO: ' + widget.newISO.toString());
 
     // TEMP VALUE FOR TESTING
-    //values[1] = 32.0;
     preference = widget.selectedPreference;
     priority = prioritySet(preference);
     values[priority] = adjustValueFullStop(values, values[2], newISO);
