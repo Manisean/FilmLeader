@@ -1,16 +1,10 @@
-# filmhelper
+# Film Leader
 
-Capstone film photography app
+Film Photography Companion Application made for Champlain College Capstone.
 
-## Getting Started
+## About
 
-This project is a starting point for a Flutter application.
+This project is a photography app that allows users to get recommended film camera settings based off of their surroundings. The app prompts beginners for what they would like their photo to look like as well as the type of film they are using for their camera. After selections are made and a photo is taken on the phone for the light meter to give a result, the app calculates what settings would be best for the film camera.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## How to Run
+Testing was done using an emulator on Android Studio as well as downloading the APK onto a physical Google Pixel.
