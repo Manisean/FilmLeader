@@ -160,68 +160,62 @@ class _MeterState extends State<Meter> {
     }
   }
 
+  double adjustShutter(List<dynamic> values, int diffIndex, int oldISO) {
+    int apertureIndex = 1;
+    int adjuster = fullStopShutter.indexOf(values[priority]);
+
+    double modISO = calculateModISO(diffIndex, oldISO.toDouble());
+    double priorityValues = values[priority] * sqrt(oldISO / modISO);
+
+    if (priorityValues > fullStopShutter.first) {
+      values[apertureIndex] = fullStopAperture[fullStopAperture.indexOf(values[apertureIndex]) - (adjuster + diffIndex)];
+
+    } else if (priorityValues < fullStopShutter.last){
+      adjuster = (fullStopShutter.indexOf(fullStopShutter.last) - adjuster) + diffIndex;
+      values[apertureIndex] = fullStopAperture[fullStopAperture.indexOf(values[apertureIndex]) - adjuster];
+    }
+    return priorityValues;
+  }
+
+  double adjustAperture(List<dynamic> values, int diffIndex, int newISO, int oldISO) {
+    int shutterIndex = 0;
+    int adjuster = fullStopAperture.indexOf(values[priority]);
+
+    double modISO = newISO.toDouble();
+    double priorityValues = values[priority] * sqrt(modISO / oldISO);
+
+    if (priorityValues < fullStopAperture.first) {
+      adjuster = adjuster - diffIndex;
+      values[shutterIndex] = fullStopShutter[fullStopShutter.indexOf(values[shutterIndex]) + adjuster];
+
+    } else if (priorityValues > fullStopAperture.last) {
+      adjuster = (fullStopAperture.indexOf(fullStopAperture.last) - adjuster) + diffIndex;
+      values[shutterIndex] = fullStopShutter[fullStopShutter.indexOf(values[shutterIndex]) - adjuster];
+    }
+    return priorityValues;
+  }
+
+  double calculateModISO(int diffIndex, double modISO) {
+    num multiplier = (diffIndex < 0) ? 4 : 0.25;
+    for (int i = 0; i < diffIndex.abs(); i++) {
+      modISO *= multiplier;
+    }
+    return modISO;
+  }
+
   // Method to calculate new value for shutter speed or aperture based on selected ISO
   double adjustValueFullStop(List<dynamic> values, int oldISO, int newISO) {
     // Calculate new value based on the inverse square law
     print("imported ISO adjust function: $newISO");
     int oldISOIndex = fullStopISO.indexOf(oldISO);
     int newISOIndex = fullStopISO.indexOf(newISO);
-    double modISO = newISO.toDouble();
-
-
-    //print('INDEX OF OLD ISO: $oldISOIndex');
-    //print('INDEX OF NEW ISO: $newISOIndex');
-
     int diffIndex = oldISOIndex - newISOIndex;
 
-    //print('INDEX DIFFERENCE: $diffIndex');
-
-    if(priority == 0) { //shutter
-      int posIndex = diffIndex.abs();
-      modISO = oldISO.toDouble();
-
-      // This if must be done because direct stop conversion of value*sqrt(oldISO/newISO)
-      // is not possible so the ISO must adjusted in a different way to make shutter
-      // values accurate.
-
-      if (diffIndex < 0) {
-        for (int i = 0; i < posIndex; i++) {
-          modISO *= 4;
-          //print('CONVERTED ISO GREATER: $modISO');
-        }
-      } else {
-        for (int i = 0; i < posIndex; i++) {
-          modISO /= 4;
-          //print('CONVERTED ISO LESSER: $modISO');
-        }
-      }
-
-      double newValue = values[priority] * sqrt(oldISO / modISO);
-      //print('NEW VALUE $newValue');
-      if (newValue > fullStopShutter.first) {
-        int adjuster = fullStopShutter.indexOf(values[priority]) + diffIndex;
-        //print('INDEX OF OVERFLOW: $adjuster');
-        values[1] = fullStopAperture[fullStopAperture.indexOf(values[1]) - adjuster];
-      } else if (newValue < fullStopShutter.last){
-        int adjuster = (fullStopShutter.indexOf(fullStopShutter.last) - fullStopShutter.indexOf(values[priority])) + diffIndex;
-        //print('INDEX OF OVERFLOW: $adjuster');
-        values[1] = fullStopAperture[fullStopAperture.indexOf(values[1]) - adjuster];
-      }
-      return values[priority] * sqrt(oldISO / modISO);
-    } else { //aperture
-      double newValue = values[priority] * sqrt(modISO / oldISO);
-      if (newValue < fullStopAperture.first) {
-        int adjuster = fullStopAperture.indexOf(values[priority]) - diffIndex;
-        //print('INDEX OF OVERFLOW: $adjuster');
-        values[0] = fullStopShutter[fullStopShutter.indexOf(values[0]) + adjuster];
-      } else if (newValue > fullStopAperture.last) {
-        int adjuster = (fullStopAperture.indexOf(fullStopAperture.last) - fullStopAperture.indexOf(values[priority])) + diffIndex;
-        //print('INDEX OF OVERFLOW: $adjuster');
-        values[0] = fullStopShutter[fullStopShutter.indexOf(values[0]) - adjuster];
-      }
-      return values[priority] * sqrt(modISO / oldISO);
+    if (priority == 0) {
+      return adjustShutter(values, diffIndex, oldISO);
+    } else{
+      return adjustAperture(values, diffIndex, newISO, oldISO);
     }
-
   }
 
   @override
@@ -236,26 +230,20 @@ class _MeterState extends State<Meter> {
 
     //print('Values array: $values');
 
-    values[0] = values[0]
-        .toString()
-        .split('/')
-        .map((value) => double.parse(value))
-        .reduce((a, b) => a / b);
-    values[1] = values[1]
-        .toString()
-        .split('/')
-        .map((value) => double.parse(value))
-        .reduce((a, b) => a / b);
+    for (var i = 0; i < 2; i++) {
+      values[i] = values[i]
+          .toString()
+          .split('/')
+          .map((value) => double.parse(value))
+          .reduce((a, b) => a / b);
+    }
 
     //print('Values array: $values');
 
-    values[0] = values[0].toString();
-    values[1] = values[1].toString();
-    values[2] = values[2].toString();
-
-    values[0] = double.parse(values[0]);
-    values[1] = double.parse(values[1]);
-    values[2] = double.parse(values[2]);
+    for (var i = 0; i < 3; i++) {
+      values[i] = values[i].toString();
+      values[i] = double.parse(values[i]);
+    }
 
     roundCapture(values);
     //print('Values array: $values');
