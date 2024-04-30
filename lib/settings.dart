@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark, // Dark theme
       ),
-      home: MyHomePage(title: 'Home Page'),
+      home: const MyHomePage(title: 'Home Page'),
       routes: {
         '/settings': (context) => SettingsPage(),
       },
