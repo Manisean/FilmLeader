@@ -12,12 +12,12 @@ class BeginnerPage extends StatefulWidget {
 }
 
 class _BeginnerPageState extends State<BeginnerPage> {
-  late int _selectedFocusGroup1;
+  late int _selectedOption;
 
   @override
   void initState() {
     super.initState();
-    _selectedFocusGroup1 = PreferencesManager.selectedFocusGroup1;
+    _selectedOption = PreferencesManager.selectedOption;
   }
 
   @override
@@ -38,7 +38,7 @@ class _BeginnerPageState extends State<BeginnerPage> {
               );
               if (result != null && result is Map<String, int?>) {
                 setState(() {
-                  _selectedFocusGroup1 = result['selectedFocusGroup1'] ?? -1;
+                  _selectedOption = result['selectedOption'] ?? -1;
                 });
               }
             },
@@ -77,10 +77,10 @@ class _BeginnerPageState extends State<BeginnerPage> {
                       'Some Blur',
                       'Lots of Blur'
                     ][i],
-                    selected: _selectedFocusGroup1 == i,
+                    selected: _selectedOption == i,
                     onSelect: () {
                       setState(() {
-                        _selectedFocusGroup1 = i;
+                        _selectedOption = i;
                       });
                     },
                   ),
@@ -88,14 +88,14 @@ class _BeginnerPageState extends State<BeginnerPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: (_selectedFocusGroup1 != -1)
+              onPressed: (_selectedOption != -1)
                   ? () {
                       // Both groups have selections, navigate to Camera Page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => CameraBeginPage(
-                                selectedFocusGroup1: _selectedFocusGroup1)),
+                                selectedOption: _selectedOption)),
                       );
                     }
                   : null,
@@ -224,17 +224,10 @@ class PreferencesManager {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  static int get selectedFocusGroup1 =>
-      _prefs?.getInt('selectedFocusGroup1') ?? -1;
+  static int get selectedOption =>
+      _prefs?.getInt('selectedOption') ?? -1;
 
-  static int get selectedFocusGroup2 =>
-      _prefs?.getInt('selectedFocusGroup2') ?? -1;
-
-  static Future<void> setSelectedFocusGroup1(int value) async {
-    await _prefs?.setInt('selectedFocusGroup1', value);
-  }
-
-  static Future<void> setSelectedFocusGroup2(int value) async {
-    await _prefs?.setInt('selectedFocusGroup2', value);
+  static Future<void> setSelectedOption(int value) async {
+    await _prefs?.setInt('selectedOption', value);
   }
 }

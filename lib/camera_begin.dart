@@ -10,9 +10,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'settings.dart';
 
 class CameraBeginPage extends StatelessWidget {
-  final int selectedFocusGroup1;
+  final int selectedOption;
 
-  const CameraBeginPage({super.key, required this.selectedFocusGroup1});
+  const CameraBeginPage({super.key, required this.selectedOption});
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +31,16 @@ class CameraBeginPage extends StatelessWidget {
         ],
       ),
       body: Camera(
-        selectedFocusGroup1: selectedFocusGroup1,
+        selectedOption: selectedOption,
       ),
     );
   }
 }
 
 class Camera extends StatefulWidget {
-  final int selectedFocusGroup1;
+  final int selectedOption;
 
-  const Camera({super.key, required this.selectedFocusGroup1});
+  const Camera({super.key, required this.selectedOption});
 
   @override
   State<Camera> createState() => _CameraState();
@@ -174,7 +174,7 @@ class _CameraState extends State<Camera> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ISOBeginPage(metered: metered, selectedGroup: widget.selectedFocusGroup1)),
+                                        builder: (context) => ISOBeginPage(metered: metered, selectedGroup: widget.selectedOption)),
                                   );
                                 },
                               ),

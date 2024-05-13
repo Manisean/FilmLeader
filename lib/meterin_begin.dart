@@ -186,18 +186,20 @@ class _MeterState extends State<Meter> {
 
     //print('Values array: $values');
 
-    values[0] = values[0].toString().split('/').map((value) => double.parse(value)).reduce((a, b) => a / b);
-    values[1] = values[1].toString().split('/').map((value) => double.parse(value)).reduce((a, b) => a / b);
+    for (var i = 0; i < 2; i++) {
+      values[i] = values[i]
+          .toString()
+          .split('/')
+          .map((value) => double.parse(value))
+          .reduce((a, b) => a / b);
+    }
 
     //print('Values array: $values');
 
-    values[0] = values[0].toString();
-    values[1] = values[1].toString();
-    values[2] = values[2].toString();
-
-    values[0] = double.parse(values[0]);
-    values[1] = double.parse(values[1]);
-    values[2] = double.parse(values[2]);
+    for (var i = 0; i < 3; i++) {
+      values[i] = values[i].toString();
+      values[i] = double.parse(values[i]);
+    }
 
     roundCapture(values);
     //print('Values array: $values');
